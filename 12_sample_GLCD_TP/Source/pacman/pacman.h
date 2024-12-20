@@ -29,6 +29,7 @@
 #define PACMANPOS 2							// Starting position of player
 #define NOSPAWN 3								// Empty space in the grid where power pills cannot spawn
 #define DOOR 4									// Door for the ghost spawn
+#define GHOSTPOS 5							// Starting position of ghost
 
 #define CONTINUE 0							// Continue flag
 #define PAUSE 1									// Pause flag
@@ -54,16 +55,23 @@
 /*
 ---------- STRUCTURE SECTION ----------
 */
+typedef struct{
+	int x_pos;										// x coord.
+	int y_pos;										// y coord.
+	int next_x;										// Next x coord.
+	int next_y;										// Next y coord. 
+} coord;
 
 typedef struct{
-	int x_pos;										// x coord. of the player
-	int y_pos;										// y coord. of the player
-	int next_x;										// Next x coord. of the player
-	int next_y;										// Next y coord. of the player
+	coord player_coord;
 	int nlives;										// Number of current lives
 	int score;										// Current score
 	int game_state;								// If game is in pause or not
 } player;
+
+typedef struct{
+	coord ghost_coord;
+} ghost;
 
 typedef struct{
 	int n_stdpills;								// Number of standard pills on the grid
@@ -76,36 +84,37 @@ typedef struct{
 
 /* pacman.c */
 // Drawing functions
-extern void draw_WallFull(uint16_t x, uint16_t y, uint32_t color, int size);
-extern void draw_Pacman(int x, int y, int radius_2, int color);
-extern void draw_WallEmpty(uint16_t x, uint16_t y, uint32_t color);
-extern void draw_Circle(int x, int y, int radius_2, int color);
-extern void draw_Pacman(int x, int y, int radius_2, int color);
+void draw_WallFull(uint16_t x, uint16_t y, uint32_t color, int size);
+void draw_Pacman(int x, int y, int radius_2, int color);
+void draw_WallEmpty(uint16_t x, uint16_t y, uint32_t color);
+void draw_Circle(int x, int y, int radius_2, int color);
+void draw_Pacman(int x, int y, int radius_2, int color);
 void draw_Pacman_new(uint16_t x, uint16_t y, int color);
 // Initialization functions
-extern void init_Header(void);
-extern void init_GameSpace(grid *gr);
-extern void init_Player(player *p);
-extern void init_Grid(grid *gr);
+void init_Header(void);
+void init_GameSpace(grid *gr);
+void init_Player(player *p);
+void init_Ghost(ghost *g);
+void init_Grid(grid *gr);
 // Update functions
-extern void update_TimerHeader(int countdown);
-extern void update_ScoreHeader(int score);
-extern void update_NewLife(player *p);
+void update_TimerHeader(int countdown);
+void update_ScoreHeader(int score);
+void update_NewLife(player *p);
 // Move layer functions
-extern void controller_Player(int direction, player *p);
-extern void move_Player(player *p, grid *gr, int direction);
+void controller_Player(int direction, coord *c);
+void move_Player(player *p, grid *gr, int direction);
 // Pop-up functions
-extern void clear_Section(int i, int j, int direction);
-extern void menu_Pause(player *p, int direction);
-extern void display_GameOver(void);
-extern void display_Win(void);
+void clear_Section(int i, int j, int direction);
+void menu_Pause(player *p, int direction);
+void display_GameOver(void);
+void display_Win(void);
 // Power pills spawn functions
-extern int rand_Range(int min, int max);
-extern void rand_PowerPill(grid *gr, player *p);
+int rand_Range(int min, int max);
+void rand_PowerPill(grid *gr, player *p);
 
-
-
-
-void draw_Pacman_generic(uint16_t x, uint16_t y, int matrix[BOXSIZE][BOXSIZE], int color);
+void draw_Character(uint16_t x, uint16_t y, int matrix[BOXSIZE][BOXSIZE], int color);
+void redraw_Pacman(int current_x, int current_y, int next_x, int next_y, int direction);
+void decrement_Life(player *p);
+void move_Ghost(ghost *ghost, player *p, grid *gr, int direction);
 
 #endif

@@ -667,6 +667,11 @@
               <FileType>5</FileType>
               <FilePath>.\Source\pacman\pacman.h</FilePath>
             </File>
+            <File>
+              <FileName>ghost.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Source\pacman\ghost.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -1323,6 +1328,11 @@
               <FileName>pacman.h</FileName>
               <FileType>5</FileType>
               <FilePath>.\Source\pacman\pacman.h</FilePath>
+            </File>
+            <File>
+              <FileName>ghost.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Source\pacman\ghost.c</FilePath>
             </File>
           </Files>
         </Group>

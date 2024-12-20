@@ -27,6 +27,7 @@ unsigned char ledval = 0xA5;
 
 extern player p;
 extern grid gr;
+extern ghost g;
 extern int direction;
 volatile int countdown = 60;
 volatile double spawn_prob;
@@ -51,7 +52,7 @@ void TIMER0_IRQHandler (void)
 		rand_PowerPill(&gr,&p);
 		}
 		
-		enable_timer(0);
+//		enable_timer(0);
 
 		
 		LPC_TIM0->IR = 4;			// clear interrupt flag 
@@ -124,7 +125,7 @@ void TIMER2_IRQHandler (void)
 			if(gr.n_powerpills == 0 && gr.n_stdpills == 0){
 					display_Win();
 				} else {
-					controller_Player(direction,&p);
+					controller_Player(direction,&p.player_coord);
 					move_Player(&p,&gr,direction);
 				}
 		}
@@ -157,8 +158,34 @@ void TIMER2_IRQHandler (void)
 ******************************************************************************/
 void TIMER3_IRQHandler (void)
 {
-  LPC_TIM3->IR = 1;			/* clear interrupt flag */
-  return;
+	if(LPC_TIM3->IR & 1) // MR0
+	{ 
+		LPC_TIM3->IR = 1;			//clear interrupt flag
+	}
+	else if(LPC_TIM3->IR & 2){ // MR1
+//		disable_timer(3);
+		
+		if(p.game_state == CONTINUE){
+			if(gr.n_powerpills != 0 || gr.n_stdpills != 0){
+					controller_Player(direction,&g.ghost_coord);
+					move_Ghost(&g,&p,&gr,direction);
+				}
+		}
+		
+//		enable_timer(3);
+
+		LPC_TIM3->IR = 2;			// clear interrupt flag 
+	}
+	else if(LPC_TIM3->IR & 4){ // MR2
+		
+		LPC_TIM3->IR = 4;			// clear interrupt flag 
+	}
+	else if(LPC_TIM3->IR & 8){ // MR3
+		// your code	
+		LPC_TIM3->IR = 8;			// clear interrupt flag 
+	} 
+
+	return;
 }
 
 /******************************************************************************

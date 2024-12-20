@@ -7,7 +7,8 @@
 
 // DECLARING VARIABLES
 extern player p;
-extern grid *gr;
+extern ghost g;
+extern grid gr;
 extern int direction;
 extern int flag;
 volatile int life_increment_threshold = NEWLIFE;
@@ -31,7 +32,7 @@ volatile int boardMatrix[ROWS][COLS] = {
 		{1,10,10,10,10,10,10,10,10,1,10,1,1,10,1,10,10,10,10,10,10,10,10,1},
 		{1,1,1,1,10,1,1,1,10,10,10,10,10,10,50,10,1,1,1,10,1,1,1,1},
 		{1,1,1,1,10,1,1,1,10,1,1,DOOR,DOOR,1,1,10,1,1,1,10,1,1,1,1},
-		{LEFTTUNNEL,NOSPAWN,NOSPAWN,NOSPAWN,10,10,10,10,10,1,NOSPAWN,NOSPAWN,NOSPAWN,NOSPAWN,1,10,10,10,10,10,NOSPAWN,NOSPAWN,NOSPAWN,RIGHTTUNNEL},		// Tunnel
+		{LEFTTUNNEL,NOSPAWN,NOSPAWN,NOSPAWN,10,10,10,10,10,1,NOSPAWN,GHOSTPOS,NOSPAWN,NOSPAWN,1,10,10,10,10,10,NOSPAWN,NOSPAWN,NOSPAWN,RIGHTTUNNEL},		// Tunnel
 		{1,1,1,1,10,1,1,1,10,1,NOSPAWN,NOSPAWN,NOSPAWN,NOSPAWN,1,10,1,1,1,10,1,1,1,1},			
 		{1,1,1,1,10,1,1,1,10,1,1,1,1,1,1,10,1,1,1,10,1,1,1,1},
 		{1,10,10,10,10,10,10,10,10,10,10,10,10,10,10,50,10,10,10,10,10,10,10,1},
@@ -44,19 +45,6 @@ volatile int boardMatrix[ROWS][COLS] = {
 		{1,10,1,1,1,1,1,1,1,1,10,1,1,10,1,1,1,1,1,1,1,1,10,1},
 		{1,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,50,10,PACMANPOS,1},
 		{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1}
-};
-
-int ghostMatrix[BOXSIZE][BOXSIZE] = {
-		{0,0,0,2,2,2,2,0,0,0},
-		{0,0,2,2,2,2,2,2,0,0},
-		{0,2,2,2,2,2,2,2,2,0},
-		{2,2,0,0,2,2,0,0,2,2},
-		{2,2,0,0,2,2,0,0,2,2},
-		{2,2,2,2,2,2,2,2,2,2},
-		{2,2,2,2,2,2,2,2,2,2},
-		{2,2,2,2,2,2,2,2,2,2},
-		{22,0,2,2,2,2,0,2,2},
-		{2,2,0,0,2,2,0,0,2,2},
 };
 
 int pacmanMatrix_UP[BOXSIZE][BOXSIZE] = {
@@ -109,6 +97,19 @@ int pacmanMatrix_RIGHT[BOXSIZE][BOXSIZE] = {
 		{0,2,2,2,2,2,2,0,0,0},			
 		{0,0,2,2,2,2,2,2,0,0},
 		{0,0,0,2,2,2,2,0,0,0},
+};
+
+int ghostMatrix[BOXSIZE][BOXSIZE] = {
+		{0,0,0,2,2,2,2,0,0,0},
+		{0,0,2,2,2,2,2,2,0,0},
+		{0,2,2,2,2,2,2,2,2,0},
+		{2,2,2,2,2,2,2,2,2,2},
+		{2,2,2,2,2,2,2,2,2,2},
+		{2,2,2,2,2,2,2,2,2,2},
+		{2,2,2,2,2,2,2,2,2,2},
+		{2,2,2,2,2,2,2,2,2,2},
+		{22,0,2,2,2,2,0,2,2},
+		{2,2,0,0,2,2,0,0,2,2},
 };
 			
 
@@ -235,7 +236,11 @@ void init_GameSpace(grid *gr){
 					gr->n_powerpills++;
 					break;		
 				case PACMANPOS:
-					draw_Pacman_generic(COLS-2,ROWS-2,pacmanMatrix_LEFT,Yellow);
+					draw_Character(COLS-2,ROWS-2,pacmanMatrix_LEFT,Yellow);
+					break;
+				case GHOSTPOS:
+					draw_Character(x,y,ghostMatrix,Red);
+					break;
 				default:
 					break;
 			}
@@ -243,15 +248,15 @@ void init_GameSpace(grid *gr){
 	}
 	
 	// Printing the first life
-	draw_Pacman_generic(1,LIFEPOS,pacmanMatrix_RIGHT,Yellow);
+	draw_Character(1,LIFEPOS,pacmanMatrix_RIGHT,Yellow);
 }
 
 // PLAYER INITIALIZATION
 void init_Player(player *p){
 	
 	// Function to initialize the player structure
-	p->x_pos = ROWS-2;
-	p->y_pos = COLS-2;
+	p->player_coord.x_pos = ROWS-2;
+	p->player_coord.y_pos = COLS-2;
 	p->nlives = INITLIVES;
 	p->score = INITSCORE;
 	p->game_state = CONTINUE;
@@ -263,71 +268,39 @@ void init_Grid(grid *gr){
 	gr->n_stdpills=0;
 }
 
-//void draw_Pacman(int x, int y, int radius_2, int color){
-
-//    int i, j;
-//    uint16_t x_start = x * BOXSIZE;
-//    uint16_t y_start = y * BOXSIZE + UPPERMENU;
-//    float distance_2;
-//    
-//    int x_center = BOXSIZE / 2;
-//    int y_center = BOXSIZE / 2;
-//    
-//    // Define the mouth angular range in radians, e.g., 45 degrees
-//    float mouth_angle_start = -M_PI / 4;  // Start angle of the mouth (top-right)
-//    float mouth_angle_end = M_PI / 4;     // End angle of the mouth (top-right)
-
-//    for(i = 0; i < BOXSIZE; i++){
-//        for(j = 0; j < BOXSIZE; j++){
-//            // Calculate squared distance from the center
-//            distance_2 = pow(i - x_center, 2) + pow(j - y_center, 2);
-//            
-//            // Calculate angle of the current pixel relative to the center
-//            float angle = atan2(j - y_center, i - x_center);
-//            
-//            // Check if the pixel is inside the circle and NOT inside the mouth area
-//            if (distance_2 <= radius_2 && 
-//                (angle < mouth_angle_start || angle > mouth_angle_end)) {
-//                // Draw the point (if within the circle and outside the mouth)
-//                LCD_SetPoint(x_start + i, y_start + j, color);
-//            }
-//        }
-//    }
-//}
-
 // LIFE INCREMENT FUNCTION
 void update_NewLife(player *p){
 
 	if(p->score >= life_increment_threshold){
 		p->nlives++;
 		life_increment_threshold += NEWLIFE;
-		draw_Pacman_generic(p->nlives,LIFEPOS,pacmanMatrix_RIGHT,Yellow);
+		draw_Character(p->nlives,LIFEPOS,pacmanMatrix_RIGHT,Yellow);
 		
 	}
 }
 
 // FUNCTION TO COMPUTE NEXT POSITION OF PLAYER
-void controller_Player(int direction, player *p){
+void controller_Player(int direction, coord *c){
 	
 	if(direction == DIRUP){
-		p->next_x = p->x_pos;
-		p->next_y = p->y_pos-1; 
+		c->next_x = c->x_pos;
+		c->next_y = c->y_pos-1; 
 	} 
 	else if (direction == DIRDOWN){
-		p->next_x = p->x_pos;
-		p->next_y = p->y_pos+1;  
-	} else if (direction == DIRLEFT && boardMatrix[p->y_pos][p->x_pos] != LEFTTUNNEL){
-		p->next_x = p->x_pos-1;
-		p->next_y = p->y_pos; 
-	}	else if (direction == DIRLEFT && boardMatrix[p->y_pos][p->x_pos] == LEFTTUNNEL){
-		p->next_x = COLS-1;
-		p->next_y = p->y_pos;  
-	} else if (direction == DIRRIGHT && boardMatrix[p->y_pos][p->x_pos] != RIGHTTUNNEL){
-		p->next_x = p->x_pos+1;
-		p->next_y = p->y_pos; 
-	}	else if (direction == DIRRIGHT && boardMatrix[p->y_pos][p->x_pos] == RIGHTTUNNEL){
-		p->next_x = 0;
-		p->next_y = p->y_pos;  
+		c->next_x = c->x_pos;
+		c->next_y = c->y_pos+1;  
+	} else if (direction == DIRLEFT && boardMatrix[c->y_pos][c->x_pos] != LEFTTUNNEL){
+		c->next_x = c->x_pos-1;
+		c->next_y = c->y_pos; 
+	}	else if (direction == DIRLEFT && boardMatrix[c->y_pos][c->x_pos] == LEFTTUNNEL){
+		c->next_x = COLS-1;
+		c->next_y = c->y_pos;  
+	} else if (direction == DIRRIGHT && boardMatrix[c->y_pos][c->x_pos] != RIGHTTUNNEL){
+		c->next_x = c->x_pos+1;
+		c->next_y = c->y_pos; 
+	}	else if (direction == DIRRIGHT && boardMatrix[c->y_pos][c->x_pos] == RIGHTTUNNEL){
+		c->next_x = 0;
+		c->next_y = c->y_pos;  
 	}
 
 }
@@ -335,34 +308,24 @@ void controller_Player(int direction, player *p){
 // FUNCTION TO PERFORM NEXT STEP OF THE PLAYER
 void move_Player(player *p, grid *gr, int direction){
 	
-	int current_x = p->x_pos;
-	int current_y = p->y_pos;
+	int current_x = p->player_coord.x_pos;
+	int current_y = p->player_coord.y_pos;
 	
-	if(boardMatrix[p->next_y][p->next_x] != WALL && 
-		boardMatrix[p->next_y][p->next_x] != DOOR &&
+	if(boardMatrix[p->player_coord.next_y][p->player_coord.next_x] != WALL && 
+		boardMatrix[p->player_coord.next_y][p->player_coord.next_x] != DOOR &&
 		direction != 0){
 		// Updating player position
-		p->x_pos = p->next_x;
-		p->y_pos = p->next_y;
-		
-		// Redrawing
-		draw_WallFull(current_x,current_y,Black,BOXSIZE);
-		if(direction == DIRUP){
-			draw_Pacman_generic(p->next_x,p->next_y,pacmanMatrix_UP,Yellow);
-		} else if (direction == DIRDOWN){
-			draw_Pacman_generic(p->next_x,p->next_y,pacmanMatrix_DOWN,Yellow); 
-		} else if (direction == DIRLEFT){
-			draw_Pacman_generic(p->next_x,p->next_y,pacmanMatrix_LEFT,Yellow);
-		}	else if (direction == DIRRIGHT){
-			draw_Pacman_generic(p->next_x,p->next_y,pacmanMatrix_RIGHT,Yellow); 
-		}
+		p->player_coord.x_pos = p->player_coord.next_x;
+		p->player_coord.y_pos = p->player_coord.next_y;
+			
+		redraw_Pacman(current_x,current_y,p->player_coord.next_x,p->player_coord.next_y,direction);
 		
 		// Updating the scores and the matrix
-		switch(boardMatrix[p->next_y][p->next_x]){
+		switch(boardMatrix[p->player_coord.next_y][p->player_coord.next_x]){
 			case STDSCORE:
 				p->score += STDSCORE;
 				update_ScoreHeader(p->score);
-				boardMatrix[p->next_y][p->next_x] = EMPTY;
+				boardMatrix[p->player_coord.next_y][p->player_coord.next_x] = EMPTY;
 				gr->n_stdpills--;
 				// Check for incrementing lives
 				update_NewLife(p);
@@ -370,7 +333,7 @@ void move_Player(player *p, grid *gr, int direction){
 			case POWERSCORE:
 				p->score += POWERSCORE;
 				update_ScoreHeader(p->score);
-				boardMatrix[p->next_y][p->next_x] = EMPTY;
+				boardMatrix[p->player_coord.next_y][p->player_coord.next_x] = EMPTY;
 				gr->n_powerpills--;
 				// Check for incrementing lives
 				update_NewLife(p);
@@ -378,8 +341,8 @@ void move_Player(player *p, grid *gr, int direction){
 		}
 	} else {
 		direction = 0;
-		p->next_x = p->x_pos;
-		p->next_y = p->y_pos;
+		p->player_coord.next_x = p->player_coord.x_pos;
+		p->player_coord.next_y = p->player_coord.y_pos;
 	}
 	
 }
@@ -407,13 +370,13 @@ void clear_Section(int i, int j, int direction){
 //				case PACMANPOS:
 //					draw_WallFull(x,y,Black,BOXSIZE);
 //					if(direction == DIRUP){
-//						draw_Pacman_generic(x,y,pacmanMatrix_UP,Yellow);
+//						draw_Character(x,y,pacmanMatrix_UP,Yellow);
 //					} else if (direction == DIRDOWN){
-//						draw_Pacman_generic(x,y,pacmanMatrix_DOWN,Yellow); 
+//						draw_Character(x,y,pacmanMatrix_DOWN,Yellow); 
 //					} else if (direction == DIRLEFT){
-//						draw_Pacman_generic(x,y,pacmanMatrix_LEFT,Yellow);
+//						draw_Character(x,y,pacmanMatrix_LEFT,Yellow);
 //					}	else if (direction == DIRRIGHT){
-//						draw_Pacman_generic(x,y,pacmanMatrix_RIGHT,Yellow); 
+//						draw_Character(x,y,pacmanMatrix_RIGHT,Yellow); 
 //					}
 					break;
 				default:
@@ -430,12 +393,14 @@ void menu_Pause(player *p, int direction){
 		disable_timer(0);
 		disable_timer(1);
 		disable_timer(2);
+		disable_timer(3);
 		p->game_state = PAUSE;
 	} else {
 		clear_Section(9,9,direction);
 		enable_timer(0);
 		enable_timer(1);
 		enable_timer(2);
+		enable_timer(3);
 		p->game_state = CONTINUE;
 	}
 }
@@ -478,8 +443,8 @@ void rand_PowerPill(grid *gr, player *p){
 					boardMatrix[y_rand][x_rand] == NOSPAWN ||
 					boardMatrix[y_rand][x_rand] == LEFTTUNNEL ||
 					boardMatrix[y_rand][x_rand] == RIGHTTUNNEL ||
-					(x_rand == p->x_pos &&
-					y_rand == p->y_pos)
+					(x_rand == p->player_coord.x_pos &&
+					y_rand == p->player_coord.y_pos)
 			);
 		
 		if(boardMatrix[y_rand][x_rand] == STDSCORE){
@@ -523,7 +488,7 @@ void draw_Pacman_new(uint16_t x, uint16_t y, int color){
 
 }
 
-void draw_Pacman_generic(uint16_t x, uint16_t y, int matrix[BOXSIZE][BOXSIZE], int color){
+void draw_Character(uint16_t x, uint16_t y, int matrix[BOXSIZE][BOXSIZE], int color){
 
 	int i, j;
 	uint32_t bgcolor;
@@ -546,4 +511,18 @@ void draw_Pacman_generic(uint16_t x, uint16_t y, int matrix[BOXSIZE][BOXSIZE], i
 		}
 	}
 
+}
+
+void redraw_Pacman(int current_x, int current_y, int next_x, int next_y, int direction){
+		// Redrawing
+		draw_WallFull(current_x,current_y,Black,BOXSIZE);
+		if(direction == DIRUP){
+			draw_Character(next_x,next_y,pacmanMatrix_UP,Yellow);
+		} else if (direction == DIRDOWN){
+			draw_Character(next_x,next_y,pacmanMatrix_DOWN,Yellow); 
+		} else if (direction == DIRLEFT){
+			draw_Character(next_x,next_y,pacmanMatrix_LEFT,Yellow);
+		}	else if (direction == DIRRIGHT){
+			draw_Character(next_x,next_y,pacmanMatrix_RIGHT,Yellow); 
+		}
 }
