@@ -26,7 +26,6 @@ extern unsigned char led_value;					/* defined in funct_led								*/
 unsigned char ledval = 0xA5;
 
 extern player p;
-extern player ghost;
 extern grid gr;
 extern int direction;
 volatile int countdown = 60;
@@ -52,7 +51,7 @@ void TIMER0_IRQHandler (void)
 		rand_PowerPill(&gr,&p);
 		}
 		
-//		enable_timer(0);
+		enable_timer(0);
 
 		
 		LPC_TIM0->IR = 4;			// clear interrupt flag 
@@ -125,7 +124,7 @@ void TIMER2_IRQHandler (void)
 			if(gr.n_powerpills == 0 && gr.n_stdpills == 0){
 					display_Win();
 				} else {
-					controller_Character(direction,&p);
+					controller_Player(direction,&p);
 					move_Player(&p,&gr,direction);
 				}
 		}

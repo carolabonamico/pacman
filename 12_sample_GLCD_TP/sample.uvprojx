@@ -658,11 +658,6 @@
           <GroupName>pacman</GroupName>
           <Files>
             <File>
-              <FileName>ghost.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\ghost.c</FilePath>
-            </File>
-            <File>
               <FileName>pacman.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\Source\pacman\pacman.c</FilePath>
@@ -1319,11 +1314,6 @@
         <Group>
           <GroupName>pacman</GroupName>
           <Files>
-            <File>
-              <FileName>ghost.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\ghost.c</FilePath>
-            </File>
             <File>
               <FileName>pacman.c</FileName>
               <FileType>1</FileType>
