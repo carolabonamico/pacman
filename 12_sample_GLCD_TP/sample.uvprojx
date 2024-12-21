@@ -672,6 +672,11 @@
               <FileType>1</FileType>
               <FilePath>.\Source\pacman\ghost.c</FilePath>
             </File>
+            <File>
+              <FileName>astar.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Source\pacman\astar.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -1333,6 +1338,11 @@
               <FileName>ghost.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\Source\pacman\ghost.c</FilePath>
+            </File>
+            <File>
+              <FileName>astar.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Source\pacman\astar.c</FilePath>
             </File>
           </Files>
         </Group>

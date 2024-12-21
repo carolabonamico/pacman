@@ -14,6 +14,7 @@ extern ghost g;
 void init_Ghost(ghost *g){
 	g->ghost_coord.x_pos = 11;
 	g->ghost_coord.y_pos = 11;
+	g->path_length = 0;
 }
 
 void move_Ghost(ghost *ghost, player *p, grid *gr, int direction){

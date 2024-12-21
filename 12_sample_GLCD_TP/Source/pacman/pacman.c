@@ -268,6 +268,10 @@ void init_Grid(grid *gr){
 	gr->n_stdpills=0;
 }
 
+void init_Perc(percorso *perc){
+	perc->path_length = 0;
+}
+
 // LIFE INCREMENT FUNCTION
 void update_NewLife(player *p){
 

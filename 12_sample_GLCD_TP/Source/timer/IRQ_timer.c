@@ -33,6 +33,11 @@ volatile int countdown = 60;
 volatile double spawn_prob;
 volatile int seed;
 
+extern Node dest;
+extern Node start;
+extern int grid_test[ROW][COL];
+extern percorso perc;
+
 void TIMER0_IRQHandler (void)
 {
 	if(LPC_TIM0->IR & 1) // MR0
@@ -168,8 +173,12 @@ void TIMER3_IRQHandler (void)
 		if(p.game_state == CONTINUE){
 			if(gr.n_powerpills != 0 || gr.n_stdpills != 0){
 					controller_Player(direction,&g.ghost_coord);
-					a_Star(&g,&p);
+//					a_Star(&g,&p);
 //					move_Ghost(&g,&p,&gr,direction);
+				
+//					a_star(grid_test, start, dest);
+//				g.path_length = a_star(grid_test, start, dest, &perc);
+
 				}
 		}
 		

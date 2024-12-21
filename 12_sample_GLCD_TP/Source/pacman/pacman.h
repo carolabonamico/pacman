@@ -98,6 +98,25 @@ typedef struct {
 		int parent_y;
 } cell;
 
+// Defining a structure for each node
+typedef struct {
+    int x, y;
+} Node;
+
+// Defining a structure for a point in the grid_test
+typedef struct {
+    int f, g, h;
+    int parent_x, parent_y;
+} Cell;
+
+#define ROW 9
+#define COL 10
+
+typedef struct {
+    Node path[ROW * COL];  	// Path array
+    int path_length;        // Length of the path
+} percorso;
+
 /*
 ---------- FUNCTIONS DECLARATION ----------
 */
@@ -143,5 +162,7 @@ int calculate_Heuristic(int row, int col, node dest);
 int is_Valid(int row, int col);
 void reconstruct_path(cell cellDetails[ROWS][COLS], node start, node dest, ghost *ghost);
 void a_Star(ghost *ghost, player *p);
+void init_Perc(percorso *perc);
+percorso a_star(int grid_test[ROW][COL], Node start, Node dest, percorso *perc);
 
 #endif

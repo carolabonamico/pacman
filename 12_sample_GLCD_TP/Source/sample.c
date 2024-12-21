@@ -41,6 +41,7 @@ extern uint8_t ScaleFlag; // <- ScaleFlag needs to visible in order for the emul
 player p;
 ghost g;
 grid gr;
+percorso perc;
 volatile int direction;
 extern int boardMatrix[COLS][ROWS];
 extern int ghostMatrix[BOXSIZE][BOXSIZE];
@@ -48,6 +49,10 @@ extern int pacmanMatrix_LEFT[BOXSIZE][BOXSIZE];
 extern int pacmanMatrix_RIGTH[BOXSIZE][BOXSIZE];
 extern int pacmanMatrix_UP[BOXSIZE][BOXSIZE];
 extern int pacmanMatrix_DOWN[BOXSIZE][BOXSIZE];
+extern int grid_test[ROW][COLS];
+Node start = {0, 0}; // Start at (0, 0)
+Node dest = {8, 9};  // Destination at (8, 9)
+
 
 int main(void)
 {
@@ -63,6 +68,8 @@ int main(void)
 	init_GameSpace(&gr);
 	init_Player(&p);
 	init_Ghost(&g);
+	init_Perc(&perc);
+	perc = a_star(grid_test, start, dest, &perc);
 	
 	joystick_init();
 	
@@ -72,13 +79,13 @@ int main(void)
 	init_timer(0,0,2,3,0x7F2815);				// Timer for generating random power pills
 	init_timer(1,0,0,3,0x17D7840);			// 1s timer for the game time
 	init_timer(2,0,1,3,0x2DC6C0);				// 20ms timer for the Pacman controller
-	init_timer(3,0,1,3,0x004C4B40);			// 50ms timer for the ghost controller
+//	init_timer(3,0,1,3,0x004C4B40);			// 50ms timer for the ghost controller
 
 	enable_RIT();	
   enable_timer(0);
 	enable_timer(1);
 	enable_timer(2);
-	enable_timer(3);
+//	enable_timer(3);
 
 	LPC_SC->PCON |= 0x1;									/* power-down	mode										*/
 	LPC_SC->PCON &= ~(0x2);						
