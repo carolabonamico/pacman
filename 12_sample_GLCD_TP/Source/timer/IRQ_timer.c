@@ -168,7 +168,8 @@ void TIMER3_IRQHandler (void)
 		if(p.game_state == CONTINUE){
 			if(gr.n_powerpills != 0 || gr.n_stdpills != 0){
 					controller_Player(direction,&g.ghost_coord);
-					move_Ghost(&g,&p,&gr,direction);
+					a_Star(&g,&p);
+//					move_Ghost(&g,&p,&gr,direction);
 				}
 		}
 		

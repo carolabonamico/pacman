@@ -5,6 +5,8 @@
 #include <stdio.h>
 #include <math.h>
 #include <stdint.h>
+#include <stdlib.h>
+#include <limits.h>							// To perform A* algorithm
 
 /*
 ---------- DEFINE SECTION ----------
@@ -70,13 +72,31 @@ typedef struct{
 } player;
 
 typedef struct{
+	int x;								
+	int y;							
+} node;
+
+typedef struct{
 	coord ghost_coord;
+	node dest;
+	node path[ROWS*COLS];
+	int path_length;
 } ghost;
 
 typedef struct{
 	int n_stdpills;								// Number of standard pills on the grid
 	int n_powerpills;							// Number of power pills on the grid
 } grid;
+
+// ----- Structures for the A* algorithm -----
+
+typedef struct {
+    int f;
+		int g;
+		int h;
+    int parent_x;
+		int parent_y;
+} cell;
 
 /*
 ---------- FUNCTIONS DECLARATION ----------
@@ -116,5 +136,12 @@ void draw_Character(uint16_t x, uint16_t y, int matrix[BOXSIZE][BOXSIZE], int co
 void redraw_Pacman(int current_x, int current_y, int next_x, int next_y, int direction);
 void decrement_Life(player *p);
 void move_Ghost(ghost *ghost, player *p, grid *gr, int direction);
+
+int is_Unblocked(int boardMatrix[ROWS][COLS], int row, int col);
+int is_Destination(int row, int col, node dest);
+int calculate_Heuristic(int row, int col, node dest);
+int is_Valid(int row, int col);
+void reconstruct_path(cell cellDetails[ROWS][COLS], node start, node dest, ghost *ghost);
+void a_Star(ghost *ghost, player *p);
 
 #endif
