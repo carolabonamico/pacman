@@ -41,7 +41,7 @@ extern uint8_t ScaleFlag; // <- ScaleFlag needs to visible in order for the emul
 player p;
 ghost g;
 grid gr;
-percorso perc;
+route r;
 volatile int direction;
 extern int boardMatrix[COLS][ROWS];
 extern int ghostMatrix[BOXSIZE][BOXSIZE];
@@ -49,9 +49,9 @@ extern int pacmanMatrix_LEFT[BOXSIZE][BOXSIZE];
 extern int pacmanMatrix_RIGTH[BOXSIZE][BOXSIZE];
 extern int pacmanMatrix_UP[BOXSIZE][BOXSIZE];
 extern int pacmanMatrix_DOWN[BOXSIZE][BOXSIZE];
-extern int grid_test[ROW][COLS];
-Node start = {0, 0}; // Start at (0, 0)
-Node dest = {8, 9};  // Destination at (8, 9)
+extern int grid_test[ROW][COL];
+node start = {0, 0}; // Start at (0, 0)
+node dest = {8, 9};  // Destination at (8, 9)
 
 
 int main(void)
@@ -68,8 +68,8 @@ int main(void)
 	init_GameSpace(&gr);
 	init_Player(&p);
 	init_Ghost(&g);
-	init_Perc(&perc);
-	perc = a_star(grid_test, start, dest, &perc);
+	init_Perc(&r);
+	r = a_Star(grid_test,start,dest);
 	
 	joystick_init();
 	

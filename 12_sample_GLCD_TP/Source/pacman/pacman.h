@@ -98,24 +98,13 @@ typedef struct {
 		int parent_y;
 } cell;
 
-// Defining a structure for each node
-typedef struct {
-    int x, y;
-} Node;
-
-// Defining a structure for a point in the grid_test
-typedef struct {
-    int f, g, h;
-    int parent_x, parent_y;
-} Cell;
-
 #define ROW 9
 #define COL 10
 
 typedef struct {
-    Node path[ROW * COL];  	// Path array
+    node path[ROW * COL];  	// Path array
     int path_length;        // Length of the path
-} percorso;
+} route;
 
 /*
 ---------- FUNCTIONS DECLARATION ----------
@@ -156,13 +145,10 @@ void redraw_Pacman(int current_x, int current_y, int next_x, int next_y, int dir
 void decrement_Life(player *p);
 void move_Ghost(ghost *ghost, player *p, grid *gr, int direction);
 
-int is_Unblocked(int boardMatrix[ROWS][COLS], int row, int col);
+// A* functions
+int is_Valid(int row,int col);
+int is_Unblocked(int grid_test[ROW][COL],int row,int col);
 int is_Destination(int row, int col, node dest);
-int calculate_Heuristic(int row, int col, node dest);
-int is_Valid(int row, int col);
-void reconstruct_path(cell cellDetails[ROWS][COLS], node start, node dest, ghost *ghost);
-void a_Star(ghost *ghost, player *p);
-void init_Perc(percorso *perc);
-percorso a_star(int grid_test[ROW][COL], Node start, Node dest, percorso *perc);
+route a_Star(int grid_test[ROW][COL],node start,node dest);
 
 #endif

@@ -12,50 +12,33 @@ volatile int grid_test[ROW][COL] = {
         {1, 1, 1, 1, 1, 1, 1, 1, 1, 1}
     };
 
-//volatile Node start = {0, 0}; // Start at (0, 0)
-//volatile Node dest = {8, 9};  // Destination at (8, 9)
+//volatile node start = {0, 0}; // Start at (0, 0)
+//volatile node dest = {8, 9};  // Destination at (8, 9)
 
 // Function to check if a cell is valid (within grid boundaries)
-int is_valid(int row, int col) {
+int is_Valid(int row,int col){
     return (row >= 0 && row < ROW && col >= 0 && col < COL);
 }
 
 // Function to check if a cell is unblocked (1 means unblocked, 0 means blocked)
-int is_unblocked(int grid_test[ROW][COL], int row, int col) {
+int is_Unblocked(int grid_test[ROW][COL],int row,int col){
     return (grid_test[row][col] == 1);
 }
 
 // Function to check if the current cell is the destination
-int is_destination(int row, int col, Node dest) {
+int is_Destination(int row, int col, node dest){
     return (row == dest.x && col == dest.y);
 }
 
-// Reconstruct the path from the cell details
-percorso reconstruct_path_test(Cell cellDetails[ROW][COL], Node start, Node dest, percorso *perc) {
-    int currentRow = dest.x;
-    int currentCol = dest.y;
-    perc->path_length = 0;
-
-    // Reconstruct path from destination to start
-    while (!(currentRow == start.x && currentCol == start.y)) {
-        perc->path[perc->path_length++] = (Node){currentRow, currentCol};
-        int tempRow = cellDetails[currentRow][currentCol].parent_x;
-        int tempCol = cellDetails[currentRow][currentCol].parent_y;
-        currentRow = tempRow;
-        currentCol = tempCol;
-    }
-
-    // Add the start node to the path
-    perc->path[perc->path_length++] = (Node){start.x, start.y};
-		return *perc;
-}
-
 // A* Search Algorithm (modified)
-percorso a_star(int grid_test[ROW][COL], Node start, Node dest, percorso *perc) {
+route a_Star(int grid_test[ROW][COL],node start,node dest){
+		
 		int i,j;
+		route r = {0};
+		
     // Initializing closed and open lists
     int closedList[ROW][COL] = {0}; // 0 means cell is not closed, 1 means closed
-    Cell cellDetails[ROW][COL]; // Details of each cell
+    cell cellDetails[ROW][COL]; // Details of each cell
 
     // Initializing the cell details grid
     for (i = 0; i < ROW; i++) {
@@ -78,7 +61,7 @@ percorso a_star(int grid_test[ROW][COL], Node start, Node dest, percorso *perc) 
     cellDetails[startX][startY].parent_y = start.y;
 
     // Open list is implemented as a priority queue
-    Node openList[ROW * COL];
+    node openList[ROW * COL];
     int openListSize = 0;
     openList[openListSize++] = start;
 
@@ -97,7 +80,7 @@ percorso a_star(int grid_test[ROW][COL], Node start, Node dest, percorso *perc) 
             }
         }
 
-        Node current = openList[lowestIndex];
+        node current = openList[lowestIndex];
         openListSize--;
         openList[lowestIndex] = openList[openListSize];  // Remove the node from the open list
 
@@ -106,16 +89,15 @@ percorso a_star(int grid_test[ROW][COL], Node start, Node dest, percorso *perc) 
         closedList[currentRow][currentCol] = 1;  // Add to closed list
 
         // If we have reached the destination
-        if (is_destination(currentRow, currentCol, dest)) {
+        if (is_Destination(currentRow, currentCol, dest)) {
 
             // Reconstruct the path inside the a_star function
-            volatile percorso perc_2 = {0};
             int currentRow = dest.x;
             int currentCol = dest.y;
 
             // Reconstruct path from destination to start
             while (!(currentRow == start.x && currentCol == start.y)) {
-                perc_2.path[perc_2.path_length++] = (Node){currentRow, currentCol};
+                r.path[r.path_length++] = (node){currentRow, currentCol};
                 int tempRow = cellDetails[currentRow][currentCol].parent_x;
                 int tempCol = cellDetails[currentRow][currentCol].parent_y;
                 currentRow = tempRow;
@@ -123,10 +105,10 @@ percorso a_star(int grid_test[ROW][COL], Node start, Node dest, percorso *perc) 
             }
 
             // Add the start node to the path
-            perc_2.path[perc_2.path_length++] = (Node){start.x, start.y};
+            r.path[r.path_length++] = (node){start.x, start.y};
 
             // Return the number of nodes in the path
-            return perc_2;
+            return r;
         }
 
         // Check the 4 possible directions
@@ -134,14 +116,14 @@ percorso a_star(int grid_test[ROW][COL], Node start, Node dest, percorso *perc) 
             int newRow = currentRow + dRow[i];
             int newCol = currentCol + dCol[i];
 
-            if (is_valid(newRow, newCol) && is_unblocked(grid_test, newRow, newCol) && !closedList[newRow][newCol]) {
+            if (is_Valid(newRow, newCol) && is_Unblocked(grid_test, newRow, newCol) && !closedList[newRow][newCol]) {
                 int gNew = cellDetails[currentRow][currentCol].g + 1;
                 int hNew = abs(newRow - dest.x) + abs(newCol - dest.y);  // Heuristic (Manhattan Distance)
                 int fNew = gNew + hNew;
 
                 // If a better path is found
                 if (fNew < cellDetails[newRow][newCol].f) {
-                    openList[openListSize++] = (Node){newRow, newCol};
+                    openList[openListSize++] = (node){newRow, newCol};
                     cellDetails[newRow][newCol].f = fNew;
                     cellDetails[newRow][newCol].g = gNew;
                     cellDetails[newRow][newCol].h = hNew;
@@ -152,5 +134,5 @@ percorso a_star(int grid_test[ROW][COL], Node start, Node dest, percorso *perc) 
         }
     }
 
-    return *perc;
+    return r;
 }

@@ -33,10 +33,10 @@ volatile int countdown = 60;
 volatile double spawn_prob;
 volatile int seed;
 
-extern Node dest;
-extern Node start;
+extern node dest;
+extern node start;
 extern int grid_test[ROW][COL];
-extern percorso perc;
+extern route perc;
 
 void TIMER0_IRQHandler (void)
 {

@@ -268,7 +268,7 @@ void init_Grid(grid *gr){
 	gr->n_stdpills=0;
 }
 
-void init_Perc(percorso *perc){
+void init_Perc(route *perc){
 	perc->path_length = 0;
 }
 
