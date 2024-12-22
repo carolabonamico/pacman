@@ -1,5 +1,7 @@
 #include "pacman.h"
 
+/* -------------------- VARIABLES DECLARATION -------------------- */
+
 extern route r;
 cell cellDetails[ROWS][COLS];
 node openList[ROWS * COLS];
@@ -20,22 +22,7 @@ volatile int grid_test[ROW][COL] = {
 //volatile node start = {0, 0}; // Start at (0, 0)
 //volatile node dest = {8, 9};  // Destination at (8, 9)
 
-// Function to initialize the route
-void init_Route(route *r){
-	
-    if (r != NULL){
-        // Set all path elements to zero (node.x and node.y to 0)
-        int i;
-        for (i = 0; i < ROW * COL; i++) {
-            r->path[i].x = 0;
-            r->path[i].y = 0;
-        }
-
-        // Set the path_length to zero
-        r->path_length = 0;
-    }
-		
-}
+/* -------------------- FUNCTIONS DEFINITION -------------------- */
 
 // Function to check if a cell is valid (within grid boundaries)
 int is_Valid(int row,int col){

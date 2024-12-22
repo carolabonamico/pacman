@@ -5,17 +5,23 @@
 /* -------------------- VARIABLES DECLARATION -------------------- */
 
 extern int boardMatrix[ROWS][COLS];
-extern int ghostMatrix[BOXSIZE][BOXSIZE];
-extern int pacmanMatrix_RIGHT[BOXSIZE][BOXSIZE];
 extern int direction;
 extern ghost g;
 
+int ghostMatrix[BOXSIZE][BOXSIZE] = {
+		{0,0,0,2,2,2,2,0,0,0},
+		{0,0,2,2,2,2,2,2,0,0},
+		{0,2,2,2,2,2,2,2,2,0},
+		{2,2,2,2,2,2,2,2,2,2},
+		{2,2,2,2,2,2,2,2,2,2},
+		{2,2,2,2,2,2,2,2,2,2},
+		{2,2,2,2,2,2,2,2,2,2},
+		{2,2,2,2,2,2,2,2,2,2},
+		{22,0,2,2,2,2,0,2,2},
+		{2,2,0,0,2,2,0,0,2,2},
+};
+
 /* -------------------- FUNCTIONS DEFINITION -------------------- */
-void init_Ghost(ghost *g){
-	g->ghost_coord.pos.x = 11;
-		g->ghost_coord.pos.y = 11;
-	g->path_length = 0;
-}
 
 void move_Ghost(ghost *ghost, player *p, grid *gr, int direction){
 	
@@ -68,16 +74,4 @@ void move_Ghost(ghost *ghost, player *p, grid *gr, int direction){
 			display_GameOver();
 		}
 			
-}
-
-void decrement_Life(player *p){
-	
-	// Erasing a life
-	draw_Character(p->nlives,LIFEPOS,pacmanMatrix_RIGHT,Black);
-	// Decrementing life counter
-	p->nlives--;
-	// Feedback to the loss of a life
-	redraw_Pacman(p->player_coord.pos.x,p->player_coord.pos.y,p->player_coord.pos.x,p->player_coord.pos.y,direction);
-	redraw_Pacman(p->player_coord.pos.x,p->player_coord.pos.y,p->player_coord.pos.x,p->player_coord.pos.y,direction);
-	
 }

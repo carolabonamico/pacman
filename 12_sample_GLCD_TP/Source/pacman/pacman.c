@@ -5,7 +5,8 @@
 #include "math.h"
 #include "../timer/timer.h"
 
-// DECLARING VARIABLES
+/* -------------------- VARIABLES DECLARATION -------------------- */
+
 extern player p;
 extern ghost g;
 extern grid gr;
@@ -13,39 +14,13 @@ extern int direction;
 extern int flag;
 volatile int life_increment_threshold = NEWLIFE;
 extern int seed;
+extern int boardMatrix[ROWS][COLS];
+extern int ghostMatrix[BOXSIZE][BOXSIZE];
 
 /* REMINDER
 #define  MAX_X  240
 #define  MAX_Y  320 
 */
-
-// Board matrix
-volatile int boardMatrix[ROWS][COLS] = {
-    {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
-		{1,10,10,10,10,10,10,10,10,10,10,1,1,10,10,10,10,10,10,10,10,10,10,1},
-		{1,10,1,1,10,1,1,1,1,1,10,1,1,10,1,1,1,1,1,10,1,1,10,1},
-		{1,10,1,1,10,1,1,1,1,1,10,1,1,10,1,1,1,1,1,10,1,1,10,1},
-		{1,10,10,10,10,10,10,10,10,10,10,10,10,10,10,50,10,10,10,10,10,10,10,1},
-		{1,10,1,1,10,1,1,10,1,1,1,1,1,1,1,1,10,1,1,10,1,1,10,1},
-		{1,10,1,1,10,1,1,10,10,10,10,1,1,10,10,10,10,1,1,10,1,1,10,1},
-		{1,10,1,1,10,1,1,1,50,1,10,1,1,10,1,10,1,1,1,10,1,1,10,1},
-		{1,10,10,10,10,10,10,10,10,1,10,1,1,10,1,10,10,10,10,10,10,10,10,1},
-		{1,1,1,1,10,1,1,1,10,10,10,10,10,10,50,10,1,1,1,10,1,1,1,1},
-		{1,1,1,1,10,1,1,1,10,1,1,DOOR,DOOR,1,1,10,1,1,1,10,1,1,1,1},
-		{LEFTTUNNEL,NOSPAWN,NOSPAWN,NOSPAWN,10,10,10,10,10,1,NOSPAWN,GHOSTPOS,NOSPAWN,NOSPAWN,1,10,10,10,10,10,NOSPAWN,NOSPAWN,NOSPAWN,RIGHTTUNNEL},		// Tunnel
-		{1,1,1,1,10,1,1,1,10,1,NOSPAWN,NOSPAWN,NOSPAWN,NOSPAWN,1,10,1,1,1,10,1,1,1,1},			
-		{1,1,1,1,10,1,1,1,10,1,1,1,1,1,1,10,1,1,1,10,1,1,1,1},
-		{1,10,10,10,10,10,10,10,10,10,10,10,10,10,10,50,10,10,10,10,10,10,10,1},
-		{1,10,1,1,1,1,1,10,1,1,1,1,1,1,1,1,10,1,1,1,1,1,10,1},
-		{1,10,10,10,1,10,10,10,10,10,10,1,1,10,10,10,10,10,10,10,10,10,10,1},
-		{1,1,1,10,1,10,1,1,1,1,10,1,1,10,1,1,1,1,10,1,10,1,1,1},
-		{1,1,1,10,1,10,10,10,10,10,10,10,10,10,50,10,10,10,10,1,10,1,1,1},
-		{1,1,1,10,1,10,1,10,1,1,1,1,1,1,1,1,10,1,10,1,10,1,1,1},
-		{1,10,10,10,10,10,1,10,10,10,10,1,1,10,10,10,10,1,10,10,10,10,10,1},
-		{1,10,1,1,1,1,1,1,1,1,10,1,1,10,1,1,1,1,1,1,1,1,10,1},
-		{1,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,50,10,PACMANPOS,1},
-		{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1}
-};
 
 int pacmanMatrix_UP[BOXSIZE][BOXSIZE] = {
 		{0,0,0,0,0,0,0,0,0,0},
@@ -98,24 +73,9 @@ int pacmanMatrix_RIGHT[BOXSIZE][BOXSIZE] = {
 		{0,0,2,2,2,2,2,2,0,0},
 		{0,0,0,2,2,2,2,0,0,0},
 };
-
-int ghostMatrix[BOXSIZE][BOXSIZE] = {
-		{0,0,0,2,2,2,2,0,0,0},
-		{0,0,2,2,2,2,2,2,0,0},
-		{0,2,2,2,2,2,2,2,2,0},
-		{2,2,2,2,2,2,2,2,2,2},
-		{2,2,2,2,2,2,2,2,2,2},
-		{2,2,2,2,2,2,2,2,2,2},
-		{2,2,2,2,2,2,2,2,2,2},
-		{2,2,2,2,2,2,2,2,2,2},
-		{22,0,2,2,2,2,0,2,2},
-		{2,2,0,0,2,2,0,0,2,2},
-};
 			
 
-/*
-------------- DRAW FUNCTIONS -------------
-*/
+/* -------------------- FUNCTIONS DEFINITION -------------------- */
 
 void draw_WallFull(uint16_t x, uint16_t y, uint32_t color, int size){
 	int i,j;
@@ -170,19 +130,6 @@ void draw_Circle(int x, int y, int radius_2, int color){
 	
 }
 
-/*
-------------- INITIALIZATION FUNCTIONS -------------
-*/
-
-/* FUNCTION TO INITIALIZE THE INTERFACE */
-void init_Header(){
-	GUI_Text(0,0,(unsigned char*) "GAME OVER IN",White,Black);
-	GUI_Text(0,20,(unsigned char*) "60s" ,White,Black);
-	
-	GUI_Text((MAX_X/3)*2,0,(unsigned char*) "SCORE",White,Black);
-	GUI_Text((MAX_X/3)*2,MAX_Y/16,(unsigned char*) "0",White,Black);
-}
-
 void update_TimerHeader(int countdown){
 	char str_timer[5];
 	
@@ -201,71 +148,6 @@ void update_ScoreHeader(int score){
 	sprintf(str_score, "%d", score); 
 	GUI_Text((MAX_X/3)*2,0,(unsigned char*) "SCORE",White,Black);
 	GUI_Text((MAX_X/3)*2,MAX_Y/16,(unsigned char*) str_score ,White,Black);
-}
-
-/* FUNCTION TO INITIALIZE THE MAZE*/
-void init_GameSpace(grid *gr){
-	uint16_t x,y;
-	uint32_t color;
-
-  for(y=0;y<ROWS;y++){
-		for(x=0;x<COLS;x++){
-					
-			switch(boardMatrix[y][x]){	
-				// Blue wall
-				case WALL: 
-					color = Blue; 					
-					draw_WallEmpty(x,y,color);
-					break; 
-				// Black path
-				case 0: 
-					color = Black; 				
-					break; 		
-				// Red standard pill 
-				case STDSCORE: 
-					color= Red; 					
-					draw_Circle(x,y,STDRADIUS,color);
-					//draw_STDpill(x,y,color);
-					gr->n_stdpills++;
-					break; 
-				// Green power pill
-				case POWERSCORE: 
-					color = Green; 				// Power pills
-					//draw_POWERpill(x,y,color);
-					draw_Circle(x,y,POWERRADIUS,color);
-					gr->n_powerpills++;
-					break;		
-				case PACMANPOS:
-					draw_Character(COLS-2,ROWS-2,pacmanMatrix_LEFT,Yellow);
-					break;
-				case GHOSTPOS:
-					draw_Character(x,y,ghostMatrix,Red);
-					break;
-				default:
-					break;
-			}
-    } 		
-	}
-	
-	// Printing the first life
-	draw_Character(1,LIFEPOS,pacmanMatrix_RIGHT,Yellow);
-}
-
-// PLAYER INITIALIZATION
-void init_Player(player *p){
-	
-	// Function to initialize the player structure
-	p->player_coord.pos.x = ROWS-2;
-	p->player_coord.pos.y = COLS-2;
-	p->nlives = INITLIVES;
-	p->score = INITSCORE;
-	p->game_state = CONTINUE;
-	
-}
-
-void init_Grid(grid *gr){
-	gr->n_powerpills=0;
-	gr->n_stdpills=0;
 }
 
 void init_Perc(route *perc){
@@ -349,83 +231,6 @@ void move_Player(player *p, grid *gr, int direction){
 		p->player_coord.next_pos.y = p->player_coord.pos.y;
 	}
 	
-}
-
-void clear_Section(int i, int j, int direction){
-	uint16_t x = 9;
-	uint16_t y = 9;
-
-  for(y=9;y<j+5;y++){
-		for(x=9;x<i+7;x++){
-			draw_WallFull(x,y,Black,BOXSIZE);
-			switch(boardMatrix[y][x]){
-				case WALL:
-					draw_WallEmpty((uint16_t) x,(uint16_t) y, Blue);
-					break;
-				case STDSCORE:
-					draw_Circle(x,y,STDRADIUS,Red);
-					break;
-				case POWERSCORE:
-					draw_Circle(x,y,POWERRADIUS,Green);
-					break;
-				
-				// CASE FOR THE GHOST
-				
-//				case PACMANPOS:
-//					draw_WallFull(x,y,Black,BOXSIZE);
-//					if(direction == DIRUP){
-//						draw_Character(x,y,pacmanMatrix_UP,Yellow);
-//					} else if (direction == DIRDOWN){
-//						draw_Character(x,y,pacmanMatrix_DOWN,Yellow); 
-//					} else if (direction == DIRLEFT){
-//						draw_Character(x,y,pacmanMatrix_LEFT,Yellow);
-//					}	else if (direction == DIRRIGHT){
-//						draw_Character(x,y,pacmanMatrix_RIGHT,Yellow); 
-//					}
-					break;
-				default:
-					break;			
-			}
-		}
-  } 		
-}
-
-
-void menu_Pause(player *p, int direction){
-	if(p->game_state == CONTINUE){
-		GUI_Text(93,160,(uint8_t*) " PAUSE ", Red, White);
-		disable_timer(0);
-		disable_timer(1);
-		disable_timer(2);
-		disable_timer(3);
-		p->game_state = PAUSE;
-	} else {
-		clear_Section(9,9,direction);
-		enable_timer(0);
-		enable_timer(1);
-		enable_timer(2);
-		enable_timer(3);
-		p->game_state = CONTINUE;
-	}
-}
-
-void display_GameOver(){
-	disable_timer(0);
-	disable_timer(1);
-	disable_timer(2);
-	disable_timer(3);
-	disable_RIT();
-	GUI_Text(78, 160,(uint8_t*) " GAME OVER ", Red, White);
-
-}
-
-void display_Win(){
-	GUI_Text(83,160,(uint8_t*) " VICTORY ", Red, White);
-	disable_timer(0);
-	disable_timer(1);
-	disable_timer(2);
-	disable_timer(3);
-	disable_RIT();
 }
 
 int rand_Range(int min, int max){

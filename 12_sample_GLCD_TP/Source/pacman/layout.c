@@ -1,0 +1,126 @@
+#include "../pacman/pacman.h"
+#include "../GLCD/GLCD.h"
+#include "../timer/timer.h"
+
+/* -------------------- VARIABLES DECLARATION -------------------- */
+
+extern int pacmanMatrix_RIGHT[BOXSIZE][BOXSIZE];
+extern int direction;
+
+// Board matrix
+volatile int boardMatrix[ROWS][COLS] = {
+    {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
+		{1,10,10,10,10,10,10,10,10,10,10,1,1,10,10,10,10,10,10,10,10,10,10,1},
+		{1,10,1,1,10,1,1,1,1,1,10,1,1,10,1,1,1,1,1,10,1,1,10,1},
+		{1,10,1,1,10,1,1,1,1,1,10,1,1,10,1,1,1,1,1,10,1,1,10,1},
+		{1,10,10,10,10,10,10,10,10,10,10,10,10,10,10,50,10,10,10,10,10,10,10,1},
+		{1,10,1,1,10,1,1,10,1,1,1,1,1,1,1,1,10,1,1,10,1,1,10,1},
+		{1,10,1,1,10,1,1,10,10,10,10,1,1,10,10,10,10,1,1,10,1,1,10,1},
+		{1,10,1,1,10,1,1,1,50,1,10,1,1,10,1,10,1,1,1,10,1,1,10,1},
+		{1,10,10,10,10,10,10,10,10,1,10,1,1,10,1,10,10,10,10,10,10,10,10,1},
+		{1,1,1,1,10,1,1,1,10,10,10,10,10,10,50,10,1,1,1,10,1,1,1,1},
+		{1,1,1,1,10,1,1,1,10,1,1,DOOR,DOOR,1,1,10,1,1,1,10,1,1,1,1},
+		{LEFTTUNNEL,NOSPAWN,NOSPAWN,NOSPAWN,10,10,10,10,10,1,NOSPAWN,GHOSTPOS,NOSPAWN,NOSPAWN,1,10,10,10,10,10,NOSPAWN,NOSPAWN,NOSPAWN,RIGHTTUNNEL},		// Tunnel
+		{1,1,1,1,10,1,1,1,10,1,NOSPAWN,NOSPAWN,NOSPAWN,NOSPAWN,1,10,1,1,1,10,1,1,1,1},			
+		{1,1,1,1,10,1,1,1,10,1,1,1,1,1,1,10,1,1,1,10,1,1,1,1},
+		{1,10,10,10,10,10,10,10,10,10,10,10,10,10,10,50,10,10,10,10,10,10,10,1},
+		{1,10,1,1,1,1,1,10,1,1,1,1,1,1,1,1,10,1,1,1,1,1,10,1},
+		{1,10,10,10,1,10,10,10,10,10,10,1,1,10,10,10,10,10,10,10,10,10,10,1},
+		{1,1,1,10,1,10,1,1,1,1,10,1,1,10,1,1,1,1,10,1,10,1,1,1},
+		{1,1,1,10,1,10,10,10,10,10,10,10,10,10,50,10,10,10,10,1,10,1,1,1},
+		{1,1,1,10,1,10,1,10,1,1,1,1,1,1,1,1,10,1,10,1,10,1,1,1},
+		{1,10,10,10,10,10,1,10,10,10,10,1,1,10,10,10,10,1,10,10,10,10,10,1},
+		{1,10,1,1,1,1,1,1,1,1,10,1,1,10,1,1,1,1,1,1,1,1,10,1},
+		{1,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,50,10,PACMANPOS,1},
+		{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1}
+};
+
+/* -------------------- FUNCTIONS DEFINITION -------------------- */
+
+void decrement_Life(player *p){
+	
+	// Erasing a life
+	draw_Character(p->nlives,LIFEPOS,pacmanMatrix_RIGHT,Black);
+	// Decrementing life counter
+	p->nlives--;
+	// Feedback to the loss of a life
+	redraw_Pacman(p->player_coord.pos.x,p->player_coord.pos.y,p->player_coord.pos.x,p->player_coord.pos.y,direction);
+	redraw_Pacman(p->player_coord.pos.x,p->player_coord.pos.y,p->player_coord.pos.x,p->player_coord.pos.y,direction);
+	
+}
+
+void menu_Pause(player *p, int direction){
+	if(p->game_state == CONTINUE){
+		GUI_Text(93,160,(uint8_t*) " PAUSE ", Red, White);
+		disable_timer(0);
+		disable_timer(1);
+		disable_timer(2);
+		disable_timer(3);
+		p->game_state = PAUSE;
+	} else {
+		clear_Section(9,9,direction);
+		enable_timer(0);
+		enable_timer(1);
+		enable_timer(2);
+		enable_timer(3);
+		p->game_state = CONTINUE;
+	}
+}
+
+void display_GameOver(){
+	disable_timer(0);
+	disable_timer(1);
+	disable_timer(2);
+	disable_timer(3);
+	disable_RIT();
+	GUI_Text(78, 160,(uint8_t*) " GAME OVER ", Red, White);
+
+}
+
+void display_Win(){
+	GUI_Text(83,160,(uint8_t*) " VICTORY ", Red, White);
+	disable_timer(0);
+	disable_timer(1);
+	disable_timer(2);
+	disable_timer(3);
+	disable_RIT();
+}
+
+void clear_Section(int i, int j, int direction){
+	uint16_t x = 9;
+	uint16_t y = 9;
+
+  for(y=9;y<j+5;y++){
+		for(x=9;x<i+7;x++){
+			draw_WallFull(x,y,Black,BOXSIZE);
+			switch(boardMatrix[y][x]){
+				case WALL:
+					draw_WallEmpty((uint16_t) x,(uint16_t) y, Blue);
+					break;
+				case STDSCORE:
+					draw_Circle(x,y,STDRADIUS,Red);
+					break;
+				case POWERSCORE:
+					draw_Circle(x,y,POWERRADIUS,Green);
+					break;
+				
+				// CASE FOR THE GHOST
+				
+//				case PACMANPOS:
+//					draw_WallFull(x,y,Black,BOXSIZE);
+//					if(direction == DIRUP){
+//						draw_Character(x,y,pacmanMatrix_UP,Yellow);
+//					} else if (direction == DIRDOWN){
+//						draw_Character(x,y,pacmanMatrix_DOWN,Yellow); 
+//					} else if (direction == DIRLEFT){
+//						draw_Character(x,y,pacmanMatrix_LEFT,Yellow);
+//					}	else if (direction == DIRRIGHT){
+//						draw_Character(x,y,pacmanMatrix_RIGHT,Yellow); 
+//					}
+					break;
+				default:
+					break;			
+			}
+		}
+  } 		
+}

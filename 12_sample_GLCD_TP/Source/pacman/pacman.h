@@ -117,12 +117,7 @@ void draw_WallEmpty(uint16_t x, uint16_t y, uint32_t color);
 void draw_Circle(int x, int y, int radius_2, int color);
 void draw_Pacman(int x, int y, int radius_2, int color);
 void draw_Pacman_new(uint16_t x, uint16_t y, int color);
-// Initialization functions
-void init_Header(void);
-void init_GameSpace(grid *gr);
-void init_Player(player *p);
-void init_Ghost(ghost *g);
-void init_Grid(grid *gr);
+
 // Update functions
 void update_TimerHeader(int countdown);
 void update_ScoreHeader(int score);
@@ -130,22 +125,34 @@ void update_NewLife(player *p);
 // Move layer functions
 void controller_Player(int direction, coord *c);
 void move_Player(player *p, grid *gr, int direction);
-// Pop-up functions
-void clear_Section(int i, int j, int direction);
-void menu_Pause(player *p, int direction);
-void display_GameOver(void);
-void display_Win(void);
+
 // Power pills spawn functions
 int rand_Range(int min, int max);
 void rand_PowerPill(grid *gr, player *p);
 
 void draw_Character(uint16_t x, uint16_t y, int matrix[BOXSIZE][BOXSIZE], int color);
 void redraw_Pacman(int current_x, int current_y, int next_x, int next_y, int direction);
+
+/* layout.c */
 void decrement_Life(player *p);
+// Pop-up functions
+void clear_Section(int i, int j, int direction);
+void menu_Pause(player *p, int direction);
+void display_GameOver(void);
+void display_Win(void);
+
+/* ghost.c */
 void move_Ghost(ghost *ghost, player *p, grid *gr, int direction);
 
-// A* functions
+/* initialization.c */
+void init_Header(void);
+void init_GameSpace(grid *gr);
+void init_Player(player *p);
+void init_Ghost(ghost *g);
+void init_Grid(grid *gr);
 void init_Route(route *r);
+
+/* astar.c */
 int is_Valid(int row,int col);
 int is_Unblocked(int grid_test[ROW][COL],int row,int col);
 int is_Destination(int row, int col, node dest);

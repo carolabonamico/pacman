@@ -173,10 +173,6 @@ void TIMER3_IRQHandler (void)
 {
 	if(LPC_TIM3->IR & 1) // MR0
 	{ 
-		LPC_TIM3->IR = 1;			//clear interrupt flag
-	}
-	else if(LPC_TIM3->IR & 2){ // MR1
-		disable_timer(3);
 		
 		if(p.game_state == CONTINUE){
 			if(gr.n_powerpills != 0 || gr.n_stdpills != 0){
@@ -184,15 +180,26 @@ void TIMER3_IRQHandler (void)
 //					controller_Player(direction,&g.ghost_coord);
 //					move_Ghost(&g,&p,&gr,direction);
 				
+				}
+		}
+		
+		LPC_TIM3->IR = 1;			//clear interrupt flag
+	}
+	else if(LPC_TIM3->IR & 2){ // MR1
+		
+//		disable_timer(3);
+		
+		if(p.game_state == CONTINUE){
+			if(gr.n_powerpills != 0 || gr.n_stdpills != 0){
+				
 				// A* implementation
 				init_Route(&r);
 				a_Star(grid_test,start,dest,&r,cellDetails,openList,&current);
-				
 
 				}
 		}
 		
-		enable_timer(3);
+//		enable_timer(3);
 
 		LPC_TIM3->IR = 2;			// clear interrupt flag 
 	}

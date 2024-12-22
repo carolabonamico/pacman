@@ -677,6 +677,16 @@
               <FileType>1</FileType>
               <FilePath>.\Source\pacman\astar.c</FilePath>
             </File>
+            <File>
+              <FileName>layout.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Source\pacman\layout.c</FilePath>
+            </File>
+            <File>
+              <FileName>initialization.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Source\pacman\initialization.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -1343,6 +1353,16 @@
               <FileName>astar.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\Source\pacman\astar.c</FilePath>
+            </File>
+            <File>
+              <FileName>layout.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Source\pacman\layout.c</FilePath>
+            </File>
+            <File>
+              <FileName>initialization.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Source\pacman\initialization.c</FilePath>
             </File>
           </Files>
         </Group>
