@@ -33,6 +33,7 @@ extern route r;
 extern cell cellDetails[ROWS][COLS];
 extern node openList[ROWS * COLS];
 extern node current;
+extern int grid_test[ROW][COL];
 
 extern int direction;
 volatile int countdown = 60;
@@ -183,11 +184,9 @@ void TIMER3_IRQHandler (void)
 //					controller_Player(direction,&g.ghost_coord);
 //					move_Ghost(&g,&p,&gr,direction);
 				
-//					int temp = direction;
-					// Initializing the route to 0
-//					initialize_Route(&r);
-//					a_Star(boardMatrix,g.ghost_coord.pos,p.player_coord.pos,&r,cellDetails,openList,&current);
-//					direction = temp;
+				// A* implementation
+				init_Route(&r);
+				a_Star(grid_test,start,dest,&r,cellDetails,openList,&current);
 				
 
 				}

@@ -145,7 +145,7 @@ void decrement_Life(player *p);
 void move_Ghost(ghost *ghost, player *p, grid *gr, int direction);
 
 // A* functions
-void initialize_Route(route *r);
+void init_Route(route *r);
 int is_Valid(int row,int col);
 int is_Unblocked(int grid_test[ROW][COL],int row,int col);
 int is_Destination(int row, int col, node dest);

@@ -49,7 +49,6 @@ extern node current;
 extern int grid_test[ROW][COL];
 
 volatile int direction = 0;
-extern int boardMatrix[COLS][ROWS];
 extern int ghostMatrix[BOXSIZE][BOXSIZE];
 extern int pacmanMatrix_LEFT[BOXSIZE][BOXSIZE];
 extern int pacmanMatrix_RIGTH[BOXSIZE][BOXSIZE];
@@ -77,7 +76,6 @@ int main(void)
 	init_Ghost(&g);
 	init_Perc(&r);
 //	a_Star(boardMatrix,g.ghost_coord.pos,p.player_coord.pos,&r,cellDetails,openList,&current);
-	a_Star(grid_test,start,dest,&r,cellDetails,openList,&current);
 	
 	joystick_init();
 	
@@ -87,7 +85,7 @@ int main(void)
 	init_timer(0,0,2,3,0x7F2815);				// Timer for generating random power pills
 	init_timer(1,0,0,3,0x17D7840);			// 1s timer for the game time
 	init_timer(2,0,1,3,0x2DC6C0);				// 20ms timer for the Pacman controller
-//	init_timer(3,0,1,3,0xEE6B280);			// 10s timer for the ghost controller
+	init_timer(3,0,1,3,0xEE6B280);			// 10s timer for the ghost controller
 	init_timer(3,0,1,3,0x17D7840);			// 10s timer for the ghost controller
 
 	enable_RIT();	

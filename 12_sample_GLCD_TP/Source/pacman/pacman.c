@@ -413,6 +413,7 @@ void display_GameOver(){
 	disable_timer(0);
 	disable_timer(1);
 	disable_timer(2);
+	disable_timer(3);
 	disable_RIT();
 	GUI_Text(78, 160,(uint8_t*) " GAME OVER ", Red, White);
 
@@ -423,6 +424,7 @@ void display_Win(){
 	disable_timer(0);
 	disable_timer(1);
 	disable_timer(2);
+	disable_timer(3);
 	disable_RIT();
 }
 

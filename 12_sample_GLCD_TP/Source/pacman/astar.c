@@ -21,9 +21,9 @@ volatile int grid_test[ROW][COL] = {
 //volatile node dest = {8, 9};  // Destination at (8, 9)
 
 // Function to initialize the route
-void initialize_Route(route *r){
+void init_Route(route *r){
 	
-    if (r != NULL) {
+    if (r != NULL){
         // Set all path elements to zero (node.x and node.y to 0)
         int i;
         for (i = 0; i < ROW * COL; i++) {
