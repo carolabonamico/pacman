@@ -3,21 +3,23 @@
 /* -------------------- VARIABLES DECLARATION -------------------- */
 
 extern route r;
+
 cell cellDetails[ROWS][COLS];
 node openList[ROWS * COLS];
 node current;
+int closedList[ROWS][COLS] = {0};
 
-volatile int grid_test[ROW][COL] = {
-        {1, 1, 1, 1, 0, 0, 1, 1, 1, 1},
-        {1, 0, 0, 1, 0, 1, 0, 1, 0, 1},
-        {1, 0, 1, 1, 1, 1, 0, 1, 1, 1},
-        {1, 0, 1, 0, 1, 0, 0, 0, 0, 1},
-        {1, 0, 1, 1, 1, 1, 1, 1, 0, 1},
-        {1, 0, 0, 0, 0, 0, 1, 0, 1, 1},
-        {1, 1, 1, 1, 1, 0, 1, 0, 1, 1},
-        {1, 0, 0, 1, 1, 0, 1, 0, 1, 0},
-        {1, 1, 1, 1, 1, 1, 1, 1, 1, 1}
-};
+//volatile int grid_test[ROW][COL] = {
+//        {1, 1, 1, 1, 0, 0, 1, 1, 1, 1},
+//        {1, 0, 0, 1, 0, 1, 0, 1, 0, 1},
+//        {1, 0, 1, 1, 1, 1, 0, 1, 1, 1},
+//        {1, 0, 1, 0, 1, 0, 0, 0, 0, 1},
+//        {1, 0, 1, 1, 1, 1, 1, 1, 0, 1},
+//        {1, 0, 0, 0, 0, 0, 1, 0, 1, 1},
+//        {1, 1, 1, 1, 1, 0, 1, 0, 1, 1},
+//        {1, 0, 0, 1, 1, 0, 1, 0, 1, 0},
+//        {1, 1, 1, 1, 1, 1, 1, 1, 1, 1}
+//};
 
 //volatile node start = {0, 0}; // Start at (0, 0)
 //volatile node dest = {8, 9};  // Destination at (8, 9)
@@ -26,12 +28,12 @@ volatile int grid_test[ROW][COL] = {
 
 // Function to check if a cell is valid (within grid boundaries)
 int is_Valid(int row,int col){
-    return (row >= 0 && row < ROW && col >= 0 && col < COL);
+    return (row >= 0 && row < ROWS && col >= 0 && col < COLS);
 }
 
 // Function to check if a cell is unblocked (1 means unblocked, 0 means blocked)
-int is_Unblocked(int grid_test[ROW][COL],int row,int col){
-    return (grid_test[row][col] == 1);
+int is_Unblocked(int boardMatrix[ROWS][COLS],int row,int col){
+    return (boardMatrix[row][col] == 1);
 }
 
 // Function to check if the current cell is the destination
@@ -40,15 +42,19 @@ int is_Destination(int row, int col, node dest){
 }
 
 // A* Search Algorithm (modified)
-void a_Star(int grid_test[ROW][COL],node start,node dest,route *r,cell cellDetails[ROWS][COLS],node openList[ROWS * COLS],node *current){
+void a_Star(int boardMatrix[ROWS][COLS],node start,node dest,route *r,
+						cell cellDetails[ROWS][COLS],node openList[ROWS * COLS],
+						node *current, int closedList[ROWS][COLS]){
 		
 		int i,j;
-
-//		// Initializing the route to 0
-//		initialize_Route(r);
 		
-    // Initializing closed and open lists
-    int closedList[ROW][COL] = {0}; // 0 means cell is not closed, 1 means closed
+//    // Initializing closed and open lists
+//    int closedList[ROWS][COLS] = {0}; // 0 means cell is not closed, 1 means closed
+		for(i=0;i<ROWS;i++){
+			for(j=0;j<COLS;j++){
+				closedList[i][j] = 0;	
+			}
+		}
 
     // Initializing the cell details grid
     for (i = 0; i < ROWS; i++) {
@@ -123,7 +129,7 @@ void a_Star(int grid_test[ROW][COL],node start,node dest,route *r,cell cellDetai
             int newRow = currentRow + dRow[i];
             int newCol = currentCol + dCol[i];
 
-            if (is_Valid(newRow, newCol) && is_Unblocked(grid_test, newRow, newCol) && !closedList[newRow][newCol]) {
+            if (is_Valid(newRow, newCol) && is_Unblocked(boardMatrix, newRow, newCol) && !closedList[newRow][newCol]) {
                 int gNew = cellDetails[currentRow][currentCol].g + 1;
                 int hNew = abs(newRow - dest.x) + abs(newCol - dest.y);  // Heuristic (Manhattan Distance)
                 int fNew = gNew + hNew;

@@ -46,7 +46,7 @@ route r;
 extern cell cellDetails[ROWS][COLS];
 extern node openList[ROWS * COLS];
 extern node current;
-extern int grid_test[ROW][COL];
+//extern int grid_test[ROW][COL];
 
 volatile int direction = 0;
 extern int ghostMatrix[BOXSIZE][BOXSIZE];
@@ -74,7 +74,6 @@ int main(void)
 	init_GameSpace(&gr);
 	init_Player(&p);
 	init_Ghost(&g);
-	init_Perc(&r);
 //	a_Star(boardMatrix,g.ghost_coord.pos,p.player_coord.pos,&r,cellDetails,openList,&current);
 	
 	joystick_init();

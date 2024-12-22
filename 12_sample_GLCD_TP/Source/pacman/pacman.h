@@ -52,8 +52,8 @@
 #define DIRLEFT 4
 #define DIRRIGHT 5
 
-#define ROW 9
-#define COL 10
+//#define ROW 9
+//#define COL 10
 
 #define M_PI 3.14159265358979323846
 
@@ -151,11 +151,14 @@ void init_Player(player *p);
 void init_Ghost(ghost *g);
 void init_Grid(grid *gr);
 void init_Route(route *r);
+void init_ClosedList(int closedList[ROWS][COLS]);
 
 /* astar.c */
 int is_Valid(int row,int col);
-int is_Unblocked(int grid_test[ROW][COL],int row,int col);
+int is_Unblocked(int boardMatrix[ROWS][COLS],int row,int col);
 int is_Destination(int row, int col, node dest);
-void a_Star(int grid_test[ROW][COL],node start,node dest, route *r,cell cellDetails[ROWS][COLS],node openList[ROWS * COLS],node *current);
+void a_Star(int boardMatrix[ROWS][COLS],node start,node dest,route *r,
+						cell cellDetails[ROWS][COLS],node openList[ROWS * COLS],
+						node *current, int closedList[ROWS][COLS]);
 
 #endif

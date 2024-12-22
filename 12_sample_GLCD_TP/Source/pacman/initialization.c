@@ -85,7 +85,6 @@ void init_Player(player *p){
 void init_Ghost(ghost *g){
 	g->ghost_coord.pos.x = 11;
 	g->ghost_coord.pos.y = 11;
-	g->path_length = 0;
 }
 
 // GRID
@@ -97,13 +96,23 @@ void init_Grid(grid *gr){
 // ROUTE
 void init_Route(route *r){
 	
-	if (r != NULL){
-		int i;
-    for(i = 0; i < ROW * COL; i++){
-			r->path[i].x = 0;
-      r->path[i].y = 0;
-    }
-    r->path_length = 0;
+	int i;
+  for(i = 0; i < ROWS * COLS; i++){
+		r->path[i].x = 0;
+    r->path[i].y = 0;
   }
+  r->path_length = 0;
 		
+}
+
+// CLOSED LIST
+void init_ClosedList(int closedList[ROWS][COLS]){
+	
+	int i, j;
+	for(i=0;i<ROWS;i++){
+		for(j=0;j<COLS;j++){
+			closedList[i][j] = 0;	
+		}
+	}
+
 }
