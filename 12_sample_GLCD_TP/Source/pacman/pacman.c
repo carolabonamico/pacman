@@ -192,13 +192,14 @@ void controller_Player(int direction, coord *c){
 }
 
 // FUNCTION TO PERFORM NEXT STEP OF THE PLAYER
-void move_Player(player *p, grid *gr, int direction){
+void move_Player(player *p, grid *gr, int direction, ghost *g){
 	
 	int current_x = p->player_coord.pos.x;
 	int current_y = p->player_coord.pos.y;
 	
 	if(boardMatrix[p->player_coord.next_pos.y][p->player_coord.next_pos.x] != WALL && 
 		boardMatrix[p->player_coord.next_pos.y][p->player_coord.next_pos.x] != DOOR &&
+		!(p->player_coord.next_pos.x == g->ghost_coord.pos.x && p->player_coord.next_pos.y == g->ghost_coord.pos.y) &&
 		direction != 0){
 		// Updating player position
 		p->player_coord.pos.x = p->player_coord.next_pos.x;
@@ -223,6 +224,8 @@ void move_Player(player *p, grid *gr, int direction){
 				gr->n_powerpills--;
 				// Check for incrementing lives
 				update_NewLife(p);
+				// Bool for vulnerable ghost
+				g->vulnerable = true;
 				break;
 		}
 	} else {

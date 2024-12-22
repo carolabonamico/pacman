@@ -139,7 +139,7 @@ void TIMER2_IRQHandler (void)
 					display_Win();
 				} else {
 					controller_Player(direction,&p.player_coord);
-					move_Player(&p,&gr,direction);
+					move_Player(&p,&gr,direction,&g);
 				}
 		}
 		
@@ -189,7 +189,7 @@ void TIMER3_IRQHandler (void)
 				astar_interval ++;
 				
 				if(r.path_length>0){
-					move_Ghost_test(&g,&r,&p);
+					move_Ghost(&g,&r,&p);
 				}
 				
 			}

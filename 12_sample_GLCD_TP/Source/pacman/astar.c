@@ -105,7 +105,7 @@ void a_Star(int boardMatrix[ROWS][COLS],node start,node dest,route *r,
             }
 
             // Add the start node to the path
-            r->path[r->path_length++] = (node){start.x, start.y};
+//            r->path[r->path_length++] = (node){start.x, start.y};
 
         }
 

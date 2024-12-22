@@ -85,6 +85,7 @@ void init_Player(player *p){
 void init_Ghost(ghost *g){
 	g->ghost_coord.pos.x = 11;
 	g->ghost_coord.pos.y = 11;
+	g->vulnerable = false;
 }
 
 // GRID

@@ -103,6 +103,8 @@ void clear_Section(int i, int j, int direction){
 				case POWERSCORE:
 					draw_Circle(x,y,POWERRADIUS,Green);
 					break;
+				default:
+					break;
 				
 				// CASE FOR THE GHOST
 				
@@ -117,9 +119,7 @@ void clear_Section(int i, int j, int direction){
 //					}	else if (direction == DIRRIGHT){
 //						draw_Character(x,y,pacmanMatrix_RIGHT,Yellow); 
 //					}
-					break;
-				default:
-					break;			
+			
 			}
 		}
   } 		

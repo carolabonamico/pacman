@@ -83,6 +83,7 @@ typedef struct{
 	node dest;
 	node path[ROWS*COLS];
 	int path_length;
+	bool vulnerable;
 } ghost;
 
 typedef struct{
@@ -124,7 +125,7 @@ void update_ScoreHeader(int score);
 void update_NewLife(player *p);
 // Move layer functions
 void controller_Player(int direction, coord *c);
-void move_Player(player *p, grid *gr, int direction);
+void move_Player(player *p, grid *gr, int direction, ghost *g);
 
 // Power pills spawn functions
 int rand_Range(int min, int max);
@@ -142,8 +143,7 @@ void display_GameOver(void);
 void display_Win(void);
 
 /* ghost.c */
-void move_Ghost(ghost *ghost, player *p, grid *gr, int direction);
-void move_Ghost_test(ghost *ghost, route *r, player *p);
+void move_Ghost(ghost *ghost, route *r, player *p);
 
 /* initialization.c */
 void init_Header(void);
