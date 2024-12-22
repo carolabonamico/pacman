@@ -12,26 +12,26 @@ extern ghost g;
 
 /* -------------------- FUNCTIONS DEFINITION -------------------- */
 void init_Ghost(ghost *g){
-	g->ghost_coord.x_pos = 11;
-	g->ghost_coord.y_pos = 11;
+	g->ghost_coord.pos.x = 11;
+		g->ghost_coord.pos.y = 11;
 	g->path_length = 0;
 }
 
 void move_Ghost(ghost *ghost, player *p, grid *gr, int direction){
 	
-	int current_x = ghost->ghost_coord.x_pos;
-	int current_y = ghost->ghost_coord.y_pos;
+	int current_x = ghost->ghost_coord.pos.x;
+	int current_y = ghost->ghost_coord.pos.y;
 	
-		if(boardMatrix[ghost->ghost_coord.next_y][ghost->ghost_coord.next_x] != WALL &&
+		if(boardMatrix[ghost->ghost_coord.next_pos.y][ghost->ghost_coord.next_pos.x] != WALL &&
 			direction != 0){
 			
-			if (ghost->ghost_coord.next_x == p->player_coord.x_pos && 
-					ghost->ghost_coord.next_y == p->player_coord.y_pos){
+			if (ghost->ghost_coord.next_pos.x == p->player_coord.next_pos.x && 
+					ghost->ghost_coord.next_pos.y == p->player_coord.next_pos.y){
 				decrement_Life(p);
-				ghost->ghost_coord.next_x = ghost->ghost_coord.x_pos;
-				ghost->ghost_coord.next_y = ghost->ghost_coord.y_pos;
-				redraw_Pacman(p->player_coord.x_pos,p->player_coord.y_pos,p->player_coord.x_pos,p->player_coord.y_pos,direction);
-				redraw_Pacman(p->player_coord.x_pos,p->player_coord.y_pos,p->player_coord.x_pos,p->player_coord.y_pos,direction);
+				ghost->ghost_coord.next_pos.x = ghost->ghost_coord.pos.x;
+				ghost->ghost_coord.next_pos.y = ghost->ghost_coord.pos.y;
+				redraw_Pacman(p->player_coord.pos.x,p->player_coord.pos.y,p->player_coord.pos.x,p->player_coord.pos.y,direction);
+				redraw_Pacman(p->player_coord.pos.x,p->player_coord.pos.y,p->player_coord.pos.x,p->player_coord.pos.y,direction);
 			} else {
 					
 				if(boardMatrix[current_y][current_x] == GHOSTPOS){
@@ -52,19 +52,19 @@ void move_Ghost(ghost *ghost, player *p, grid *gr, int direction){
 				} 
 				
 				// Updating ghost	position
-				ghost->ghost_coord.x_pos = ghost->ghost_coord.next_x;
-				ghost->ghost_coord.y_pos = ghost->ghost_coord.next_y;
-				draw_Character(ghost->ghost_coord.next_x,ghost->ghost_coord.next_y,ghostMatrix,Red);
+				ghost->ghost_coord.pos.x = ghost->ghost_coord.next_pos.x;
+				ghost->ghost_coord.pos.y = ghost->ghost_coord.next_pos.y;
+				draw_Character(ghost->ghost_coord.next_pos.x,ghost->ghost_coord.next_pos.y,ghostMatrix,Red);
 			}
 				
 		} else {
-			ghost->ghost_coord.next_x = ghost->ghost_coord.x_pos;
-			ghost->ghost_coord.next_y = ghost->ghost_coord.y_pos;
+			ghost->ghost_coord.next_pos.x = ghost->ghost_coord.pos.x;
+			ghost->ghost_coord.next_pos.y = ghost->ghost_coord.pos.y;
 		}	
 		
 		if(p->nlives <= 0){
 			// Pacman disappears as it died
-			draw_WallFull(p->player_coord.x_pos,p->player_coord.y_pos,Black,BOXSIZE);
+			draw_WallFull(p->player_coord.pos.x,p->player_coord.pos.y,Black,BOXSIZE);
 			display_GameOver();
 		}
 			
@@ -77,7 +77,7 @@ void decrement_Life(player *p){
 	// Decrementing life counter
 	p->nlives--;
 	// Feedback to the loss of a life
-	redraw_Pacman(p->player_coord.x_pos,p->player_coord.y_pos,p->player_coord.x_pos,p->player_coord.y_pos,direction);
-	redraw_Pacman(p->player_coord.x_pos,p->player_coord.y_pos,p->player_coord.x_pos,p->player_coord.y_pos,direction);
+	redraw_Pacman(p->player_coord.pos.x,p->player_coord.pos.y,p->player_coord.pos.x,p->player_coord.pos.y,direction);
+	redraw_Pacman(p->player_coord.pos.x,p->player_coord.pos.y,p->player_coord.pos.x,p->player_coord.pos.y,direction);
 	
 }

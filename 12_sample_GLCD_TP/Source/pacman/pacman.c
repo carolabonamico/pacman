@@ -255,8 +255,8 @@ void init_GameSpace(grid *gr){
 void init_Player(player *p){
 	
 	// Function to initialize the player structure
-	p->player_coord.x_pos = ROWS-2;
-	p->player_coord.y_pos = COLS-2;
+	p->player_coord.pos.x = ROWS-2;
+	p->player_coord.pos.y = COLS-2;
 	p->nlives = INITLIVES;
 	p->score = INITSCORE;
 	p->game_state = CONTINUE;
@@ -287,24 +287,24 @@ void update_NewLife(player *p){
 void controller_Player(int direction, coord *c){
 	
 	if(direction == DIRUP){
-		c->next_x = c->x_pos;
-		c->next_y = c->y_pos-1; 
+		c->next_pos.x = c->pos.x;
+		c->next_pos.y = c->pos.y-1; 
 	} 
 	else if (direction == DIRDOWN){
-		c->next_x = c->x_pos;
-		c->next_y = c->y_pos+1;  
-	} else if (direction == DIRLEFT && boardMatrix[c->y_pos][c->x_pos] != LEFTTUNNEL){
-		c->next_x = c->x_pos-1;
-		c->next_y = c->y_pos; 
-	}	else if (direction == DIRLEFT && boardMatrix[c->y_pos][c->x_pos] == LEFTTUNNEL){
-		c->next_x = COLS-1;
-		c->next_y = c->y_pos;  
-	} else if (direction == DIRRIGHT && boardMatrix[c->y_pos][c->x_pos] != RIGHTTUNNEL){
-		c->next_x = c->x_pos+1;
-		c->next_y = c->y_pos; 
-	}	else if (direction == DIRRIGHT && boardMatrix[c->y_pos][c->x_pos] == RIGHTTUNNEL){
-		c->next_x = 0;
-		c->next_y = c->y_pos;  
+		c->next_pos.x = c->pos.x;
+		c->next_pos.y = c->pos.y+1;  
+	} else if (direction == DIRLEFT && boardMatrix[c->pos.y][c->pos.x] != LEFTTUNNEL){
+		c->next_pos.x = c->pos.x-1;
+		c->next_pos.y = c->pos.y; 
+	}	else if (direction == DIRLEFT && boardMatrix[c->pos.y][c->pos.x] == LEFTTUNNEL){
+		c->next_pos.x = COLS-1;
+		c->next_pos.y = c->pos.y;  
+	} else if (direction == DIRRIGHT && boardMatrix[c->pos.y][c->pos.x] != RIGHTTUNNEL){
+		c->next_pos.x = c->pos.x+1;
+		c->next_pos.y = c->pos.y; 
+	}	else if (direction == DIRRIGHT && boardMatrix[c->pos.y][c->pos.x] == RIGHTTUNNEL){
+		c->next_pos.x = 0;
+		c->next_pos.y = c->pos.y;  
 	}
 
 }
@@ -312,24 +312,24 @@ void controller_Player(int direction, coord *c){
 // FUNCTION TO PERFORM NEXT STEP OF THE PLAYER
 void move_Player(player *p, grid *gr, int direction){
 	
-	int current_x = p->player_coord.x_pos;
-	int current_y = p->player_coord.y_pos;
+	int current_x = p->player_coord.pos.x;
+	int current_y = p->player_coord.pos.y;
 	
-	if(boardMatrix[p->player_coord.next_y][p->player_coord.next_x] != WALL && 
-		boardMatrix[p->player_coord.next_y][p->player_coord.next_x] != DOOR &&
+	if(boardMatrix[p->player_coord.next_pos.y][p->player_coord.next_pos.x] != WALL && 
+		boardMatrix[p->player_coord.next_pos.y][p->player_coord.next_pos.x] != DOOR &&
 		direction != 0){
 		// Updating player position
-		p->player_coord.x_pos = p->player_coord.next_x;
-		p->player_coord.y_pos = p->player_coord.next_y;
+		p->player_coord.pos.x = p->player_coord.next_pos.x;
+		p->player_coord.pos.y = p->player_coord.next_pos.y;
 			
-		redraw_Pacman(current_x,current_y,p->player_coord.next_x,p->player_coord.next_y,direction);
+		redraw_Pacman(current_x,current_y,p->player_coord.next_pos.x,p->player_coord.next_pos.y,direction);
 		
 		// Updating the scores and the matrix
-		switch(boardMatrix[p->player_coord.next_y][p->player_coord.next_x]){
+		switch(boardMatrix[p->player_coord.next_pos.y][p->player_coord.next_pos.x]){
 			case STDSCORE:
 				p->score += STDSCORE;
 				update_ScoreHeader(p->score);
-				boardMatrix[p->player_coord.next_y][p->player_coord.next_x] = EMPTY;
+				boardMatrix[p->player_coord.next_pos.y][p->player_coord.next_pos.x] = EMPTY;
 				gr->n_stdpills--;
 				// Check for incrementing lives
 				update_NewLife(p);
@@ -337,7 +337,7 @@ void move_Player(player *p, grid *gr, int direction){
 			case POWERSCORE:
 				p->score += POWERSCORE;
 				update_ScoreHeader(p->score);
-				boardMatrix[p->player_coord.next_y][p->player_coord.next_x] = EMPTY;
+				boardMatrix[p->player_coord.next_pos.y][p->player_coord.next_pos.x] = EMPTY;
 				gr->n_powerpills--;
 				// Check for incrementing lives
 				update_NewLife(p);
@@ -345,8 +345,8 @@ void move_Player(player *p, grid *gr, int direction){
 		}
 	} else {
 		direction = 0;
-		p->player_coord.next_x = p->player_coord.x_pos;
-		p->player_coord.next_y = p->player_coord.y_pos;
+		p->player_coord.next_pos.x = p->player_coord.pos.x;
+		p->player_coord.next_pos.y = p->player_coord.pos.y;
 	}
 	
 }
@@ -447,8 +447,8 @@ void rand_PowerPill(grid *gr, player *p){
 					boardMatrix[y_rand][x_rand] == NOSPAWN ||
 					boardMatrix[y_rand][x_rand] == LEFTTUNNEL ||
 					boardMatrix[y_rand][x_rand] == RIGHTTUNNEL ||
-					(x_rand == p->player_coord.x_pos &&
-					y_rand == p->player_coord.y_pos)
+					(x_rand == p->player_coord.pos.x &&
+					y_rand == p->player_coord.pos.y)
 			);
 		
 		if(boardMatrix[y_rand][x_rand] == STDSCORE){

@@ -28,6 +28,7 @@ unsigned char ledval = 0xA5;
 extern player p;
 extern grid gr;
 extern ghost g;
+extern route r;
 extern int direction;
 volatile int countdown = 60;
 volatile double spawn_prob;
@@ -168,21 +169,23 @@ void TIMER3_IRQHandler (void)
 		LPC_TIM3->IR = 1;			//clear interrupt flag
 	}
 	else if(LPC_TIM3->IR & 2){ // MR1
-//		disable_timer(3);
+		disable_timer(3);
 		
 		if(p.game_state == CONTINUE){
 			if(gr.n_powerpills != 0 || gr.n_stdpills != 0){
-					controller_Player(direction,&g.ghost_coord);
+//					controller_Player(direction,&g.ghost_coord);
 //					a_Star(&g,&p);
 //					move_Ghost(&g,&p,&gr,direction);
+					int temp = direction;
+					r = a_Star(grid_test,start,dest);
+					direction = temp;
 				
-//					a_star(grid_test, start, dest);
 //				g.path_length = a_star(grid_test, start, dest, &perc);
 
 				}
 		}
 		
-//		enable_timer(3);
+		enable_timer(3);
 
 		LPC_TIM3->IR = 2;			// clear interrupt flag 
 	}

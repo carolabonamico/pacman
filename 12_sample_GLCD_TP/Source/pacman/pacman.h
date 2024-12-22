@@ -57,11 +57,15 @@
 /*
 ---------- STRUCTURE SECTION ----------
 */
+
 typedef struct{
-	int x_pos;										// x coord.
-	int y_pos;										// y coord.
-	int next_x;										// Next x coord.
-	int next_y;										// Next y coord. 
+	int x;								
+	int y;							
+} node;
+
+typedef struct{
+	node pos;
+	node next_pos;
 } coord;
 
 typedef struct{
@@ -70,11 +74,6 @@ typedef struct{
 	int score;										// Current score
 	int game_state;								// If game is in pause or not
 } player;
-
-typedef struct{
-	int x;								
-	int y;							
-} node;
 
 typedef struct{
 	coord ghost_coord;
