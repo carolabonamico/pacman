@@ -84,8 +84,8 @@ int main(void)
 	init_timer(0,0,2,3,0x7F2815);				// Timer for generating random power pills
 	init_timer(1,0,0,3,0x17D7840);			// 1s timer for the game time
 	init_timer(2,0,1,3,0x2DC6C0);				// 20ms timer for the Pacman controller
-	init_timer(3,0,1,3,0xEE6B280);			// 10s timer for the ghost controller
-	init_timer(3,0,1,3,0x17D7840);			// 10s timer for the ghost controller
+//	init_timer(3,0,1,3,0xEE6B280);			// 10s timer for the a* algorithm
+	init_timer(3,0,0,3,0x17D7840);			// 1s timer for the ghost movement
 
 	enable_RIT();	
   enable_timer(0);

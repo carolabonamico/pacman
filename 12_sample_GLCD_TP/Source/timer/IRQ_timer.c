@@ -34,9 +34,7 @@ extern cell cellDetails[ROWS][COLS];
 extern node openList[ROWS * COLS];
 extern node current;
 extern int closedList[ROWS][COLS];
-//extern int grid_test[ROW][COL];
-volatile node	partenza = {11,11};
-volatile node arrivo = {22,22};
+volatile int astar_interval = 10;
 
 extern int direction;
 volatile int countdown = 60;
@@ -45,7 +43,6 @@ volatile int seed;
 
 extern node dest;
 extern node start;
-//extern int boardMatrix[ROWS][COLS];
 extern route perc;
 extern int boardMatrix[ROWS][COLS];
 
@@ -183,7 +180,19 @@ void TIMER3_IRQHandler (void)
 //					controller_Player(direction,&g.ghost_coord);
 //					move_Ghost(&g,&p,&gr,direction);
 				
+				if(astar_interval == 10){
+					astar_interval = 0;
+					// A* implementation
+					init_Route(&r);
+					a_Star(boardMatrix,g.ghost_coord.pos,p.player_coord.pos,&r,cellDetails,openList,&current,closedList);
 				}
+				astar_interval ++;
+				
+				if(r.path_length>0){
+					move_Ghost_test(&g,&r,&p);
+				}
+				
+			}
 		}
 		
 		LPC_TIM3->IR = 1;			//clear interrupt flag
@@ -195,9 +204,9 @@ void TIMER3_IRQHandler (void)
 		if(p.game_state == CONTINUE){
 			if(gr.n_powerpills != 0 || gr.n_stdpills != 0){
 				
-				// A* implementation
-				init_Route(&r);
-				a_Star(boardMatrix,partenza,arrivo,&r,cellDetails,openList,&current,closedList);
+//				// A* implementation
+//				init_Route(&r);
+//				a_Star(boardMatrix,g.ghost_coord.pos,p.player_coord.pos,&r,cellDetails,openList,&current,closedList);
 
 				}
 		}

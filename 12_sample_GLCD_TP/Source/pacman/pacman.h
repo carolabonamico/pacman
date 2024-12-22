@@ -143,6 +143,7 @@ void display_Win(void);
 
 /* ghost.c */
 void move_Ghost(ghost *ghost, player *p, grid *gr, int direction);
+void move_Ghost_test(ghost *ghost, route *r, player *p);
 
 /* initialization.c */
 void init_Header(void);

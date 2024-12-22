@@ -9,21 +9,6 @@ node openList[ROWS * COLS];
 node current;
 int closedList[ROWS][COLS] = {0};
 
-//volatile int grid_test[ROW][COL] = {
-//        {1, 1, 1, 1, 0, 0, 1, 1, 1, 1},
-//        {1, 0, 0, 1, 0, 1, 0, 1, 0, 1},
-//        {1, 0, 1, 1, 1, 1, 0, 1, 1, 1},
-//        {1, 0, 1, 0, 1, 0, 0, 0, 0, 1},
-//        {1, 0, 1, 1, 1, 1, 1, 1, 0, 1},
-//        {1, 0, 0, 0, 0, 0, 1, 0, 1, 1},
-//        {1, 1, 1, 1, 1, 0, 1, 0, 1, 1},
-//        {1, 0, 0, 1, 1, 0, 1, 0, 1, 0},
-//        {1, 1, 1, 1, 1, 1, 1, 1, 1, 1}
-//};
-
-//volatile node start = {0, 0}; // Start at (0, 0)
-//volatile node dest = {8, 9};  // Destination at (8, 9)
-
 /* -------------------- FUNCTIONS DEFINITION -------------------- */
 
 // Function to check if a cell is valid (within grid boundaries)
@@ -31,9 +16,9 @@ int is_Valid(int row,int col){
     return (row >= 0 && row < ROWS && col >= 0 && col < COLS);
 }
 
-// Function to check if a cell is unblocked (1 means unblocked, 0 means blocked)
+// Function to check if a cell is unblocked
 int is_Unblocked(int boardMatrix[ROWS][COLS],int row,int col){
-    return (boardMatrix[row][col] == 1);
+    return (boardMatrix[row][col] != WALL);
 }
 
 // Function to check if the current cell is the destination
@@ -59,22 +44,22 @@ void a_Star(int boardMatrix[ROWS][COLS],node start,node dest,route *r,
     // Initializing the cell details grid
     for (i = 0; i < ROWS; i++) {
         for (j = 0; j < COLS; j++) {
-            cellDetails[i][j].f = INT_MAX;
-            cellDetails[i][j].g = INT_MAX;
-            cellDetails[i][j].h = INT_MAX;
-            cellDetails[i][j].parent_x = -1;
-            cellDetails[i][j].parent_y = -1;
+            cellDetails[j][i].f = INT_MAX;
+            cellDetails[j][i].g = INT_MAX;
+            cellDetails[j][i].h = INT_MAX;
+            cellDetails[j][i].parent_x = -1;
+            cellDetails[j][i].parent_y = -1;
         }
     }
 
     int startX = start.x;
     int startY = start.y;
 
-    cellDetails[startX][startY].f = 0;
-    cellDetails[startX][startY].g = 0;
-    cellDetails[startX][startY].h = 0;
-    cellDetails[startX][startY].parent_x = start.x;
-    cellDetails[startX][startY].parent_y = start.y;
+    cellDetails[startY][startX].f = 0;
+    cellDetails[startY][startX].g = 0;
+    cellDetails[startY][startX].h = 0;
+    cellDetails[startY][startX].parent_x = start.x;
+    cellDetails[startY][startX].parent_y = start.y;
 
     // Open list is implemented as a priority queue
     int openListSize = 0;
@@ -90,7 +75,7 @@ void a_Star(int boardMatrix[ROWS][COLS],node start,node dest,route *r,
         for (i = 1; i < openListSize; i++) {
             int x = openList[i].x;
             int y = openList[i].y;
-            if (cellDetails[x][y].f < cellDetails[openList[lowestIndex].x][openList[lowestIndex].y].f) {
+            if (cellDetails[y][x].f < cellDetails[openList[lowestIndex].y][openList[lowestIndex].x].f) {
                 lowestIndex = i;
             }
         }
@@ -99,22 +84,22 @@ void a_Star(int boardMatrix[ROWS][COLS],node start,node dest,route *r,
         openListSize--;
         openList[lowestIndex] = openList[openListSize];  // Remove the node from the open list
 
-        int currentRow = current->x;
-        int currentCol = current->y;
+        int currentRow = current->y;
+        int currentCol = current->x;
         closedList[currentRow][currentCol] = 1;  // Add to closed list
 
         // If we have reached the destination
         if (is_Destination(currentRow, currentCol, dest)) {
 
             // Reconstruct the path inside the a_star function
-            int currentRow = dest.x;
-            int currentCol = dest.y;
+            int currentRow = dest.y;
+            int currentCol = dest.x;
 
             // Reconstruct path from destination to start
-            while (!(currentRow == start.x && currentCol == start.y)) {
-                r->path[r->path_length++] = (node){currentRow, currentCol};
-                int tempRow = cellDetails[currentRow][currentCol].parent_x;
-                int tempCol = cellDetails[currentRow][currentCol].parent_y;
+            while (!(currentRow == start.y && currentCol == start.x)) {
+                r->path[r->path_length++] = (node){currentCol, currentRow};
+                int tempRow = cellDetails[currentRow][currentCol].parent_y;
+                int tempCol = cellDetails[currentRow][currentCol].parent_x;
                 currentRow = tempRow;
                 currentCol = tempCol;
             }
@@ -136,12 +121,12 @@ void a_Star(int boardMatrix[ROWS][COLS],node start,node dest,route *r,
 
                 // If a better path is found
                 if (fNew < cellDetails[newRow][newCol].f) {
-                    openList[openListSize++] = (node){newRow, newCol};
+                    openList[openListSize++] = (node){newCol, newRow};
                     cellDetails[newRow][newCol].f = fNew;
                     cellDetails[newRow][newCol].g = gNew;
                     cellDetails[newRow][newCol].h = hNew;
-                    cellDetails[newRow][newCol].parent_x = currentRow;
-                    cellDetails[newRow][newCol].parent_y = currentCol;
+                    cellDetails[newRow][newCol].parent_y = currentRow;
+                    cellDetails[newRow][newCol].parent_x = currentCol;
                 }
             }
         }
