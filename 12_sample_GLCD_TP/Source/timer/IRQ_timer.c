@@ -28,7 +28,12 @@ unsigned char ledval = 0xA5;
 extern player p;
 extern grid gr;
 extern ghost g;
+
 extern route r;
+extern cell cellDetails[ROWS][COLS];
+extern node openList[ROWS * COLS];
+extern node current;
+
 extern int direction;
 volatile int countdown = 60;
 volatile double spawn_prob;
@@ -36,8 +41,9 @@ volatile int seed;
 
 extern node dest;
 extern node start;
-extern int grid_test[ROW][COL];
+//extern int boardMatrix[ROWS][COLS];
 extern route perc;
+extern int boardMatrix[ROWS][COLS];
 
 void TIMER0_IRQHandler (void)
 {
@@ -173,14 +179,16 @@ void TIMER3_IRQHandler (void)
 		
 		if(p.game_state == CONTINUE){
 			if(gr.n_powerpills != 0 || gr.n_stdpills != 0){
-//					controller_Player(direction,&g.ghost_coord);
-//					a_Star(&g,&p);
-//					move_Ghost(&g,&p,&gr,direction);
-					int temp = direction;
-					r = a_Star(grid_test,start,dest);
-					direction = temp;
 				
-//				g.path_length = a_star(grid_test, start, dest, &perc);
+//					controller_Player(direction,&g.ghost_coord);
+//					move_Ghost(&g,&p,&gr,direction);
+				
+//					int temp = direction;
+					// Initializing the route to 0
+//					initialize_Route(&r);
+//					a_Star(boardMatrix,g.ghost_coord.pos,p.player_coord.pos,&r,cellDetails,openList,&current);
+//					direction = temp;
+				
 
 				}
 		}

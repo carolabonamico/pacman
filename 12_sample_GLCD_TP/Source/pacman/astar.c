@@ -1,5 +1,10 @@
 #include "pacman.h"
 
+extern route r;
+cell cellDetails[ROWS][COLS];
+node openList[ROWS * COLS];
+node current;
+
 volatile int grid_test[ROW][COL] = {
         {1, 1, 1, 1, 0, 0, 1, 1, 1, 1},
         {1, 0, 0, 1, 0, 1, 0, 1, 0, 1},
@@ -10,10 +15,27 @@ volatile int grid_test[ROW][COL] = {
         {1, 1, 1, 1, 1, 0, 1, 0, 1, 1},
         {1, 0, 0, 1, 1, 0, 1, 0, 1, 0},
         {1, 1, 1, 1, 1, 1, 1, 1, 1, 1}
-    };
+};
 
 //volatile node start = {0, 0}; // Start at (0, 0)
 //volatile node dest = {8, 9};  // Destination at (8, 9)
+
+// Function to initialize the route
+void initialize_Route(route *r){
+	
+    if (r != NULL) {
+        // Set all path elements to zero (node.x and node.y to 0)
+        int i;
+        for (i = 0; i < ROW * COL; i++) {
+            r->path[i].x = 0;
+            r->path[i].y = 0;
+        }
+
+        // Set the path_length to zero
+        r->path_length = 0;
+    }
+		
+}
 
 // Function to check if a cell is valid (within grid boundaries)
 int is_Valid(int row,int col){
@@ -31,18 +53,19 @@ int is_Destination(int row, int col, node dest){
 }
 
 // A* Search Algorithm (modified)
-route a_Star(int grid_test[ROW][COL],node start,node dest){
+void a_Star(int grid_test[ROW][COL],node start,node dest,route *r,cell cellDetails[ROWS][COLS],node openList[ROWS * COLS],node *current){
 		
 		int i,j;
-		route r = {0};
+
+//		// Initializing the route to 0
+//		initialize_Route(r);
 		
     // Initializing closed and open lists
     int closedList[ROW][COL] = {0}; // 0 means cell is not closed, 1 means closed
-    cell cellDetails[ROW][COL]; // Details of each cell
 
     // Initializing the cell details grid
-    for (i = 0; i < ROW; i++) {
-        for (j = 0; j < COL; j++) {
+    for (i = 0; i < ROWS; i++) {
+        for (j = 0; j < COLS; j++) {
             cellDetails[i][j].f = INT_MAX;
             cellDetails[i][j].g = INT_MAX;
             cellDetails[i][j].h = INT_MAX;
@@ -61,7 +84,6 @@ route a_Star(int grid_test[ROW][COL],node start,node dest){
     cellDetails[startX][startY].parent_y = start.y;
 
     // Open list is implemented as a priority queue
-    node openList[ROW * COL];
     int openListSize = 0;
     openList[openListSize++] = start;
 
@@ -80,12 +102,12 @@ route a_Star(int grid_test[ROW][COL],node start,node dest){
             }
         }
 
-        node current = openList[lowestIndex];
+        *current = openList[lowestIndex];
         openListSize--;
         openList[lowestIndex] = openList[openListSize];  // Remove the node from the open list
 
-        int currentRow = current.x;
-        int currentCol = current.y;
+        int currentRow = current->x;
+        int currentCol = current->y;
         closedList[currentRow][currentCol] = 1;  // Add to closed list
 
         // If we have reached the destination
@@ -97,7 +119,7 @@ route a_Star(int grid_test[ROW][COL],node start,node dest){
 
             // Reconstruct path from destination to start
             while (!(currentRow == start.x && currentCol == start.y)) {
-                r.path[r.path_length++] = (node){currentRow, currentCol};
+                r->path[r->path_length++] = (node){currentRow, currentCol};
                 int tempRow = cellDetails[currentRow][currentCol].parent_x;
                 int tempCol = cellDetails[currentRow][currentCol].parent_y;
                 currentRow = tempRow;
@@ -105,10 +127,8 @@ route a_Star(int grid_test[ROW][COL],node start,node dest){
             }
 
             // Add the start node to the path
-            r.path[r.path_length++] = (node){start.x, start.y};
+            r->path[r->path_length++] = (node){start.x, start.y};
 
-            // Return the number of nodes in the path
-            return r;
         }
 
         // Check the 4 possible directions
@@ -134,5 +154,4 @@ route a_Star(int grid_test[ROW][COL],node start,node dest){
         }
     }
 
-    return r;
 }

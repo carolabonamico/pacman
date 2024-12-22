@@ -52,6 +52,9 @@
 #define DIRLEFT 4
 #define DIRRIGHT 5
 
+#define ROW 9
+#define COL 10
+
 #define M_PI 3.14159265358979323846
 
 /*
@@ -97,11 +100,8 @@ typedef struct {
 		int parent_y;
 } cell;
 
-#define ROW 9
-#define COL 10
-
 typedef struct {
-    node path[ROW * COL];  	// Path array
+    node path[ROWS * COLS];  	// Path array
     int path_length;        // Length of the path
 } route;
 
@@ -145,9 +145,10 @@ void decrement_Life(player *p);
 void move_Ghost(ghost *ghost, player *p, grid *gr, int direction);
 
 // A* functions
+void initialize_Route(route *r);
 int is_Valid(int row,int col);
 int is_Unblocked(int grid_test[ROW][COL],int row,int col);
 int is_Destination(int row, int col, node dest);
-route a_Star(int grid_test[ROW][COL],node start,node dest);
+void a_Star(int grid_test[ROW][COL],node start,node dest, route *r,cell cellDetails[ROWS][COLS],node openList[ROWS * COLS],node *current);
 
 #endif
