@@ -22,7 +22,8 @@
 ** Returned value:		None
 **
 ******************************************************************************/
-extern unsigned char led_value;							/* defined in funct_led								*/
+
+extern unsigned char led_value;							/* defined in funct_led */
 unsigned char ledval = 0xA5;
 
 extern player p;
@@ -31,17 +32,23 @@ extern ghost g;
 
 extern route r;
 volatile float astar_interval = 10;					// Starting interval after which the a* is computed
-volatile float aggressive_treshold = 10;
+volatile float aggressive_threshold = 10;
 volatile float factor = 2.0/3;
 
 extern int direction;
-volatile int countdown = 60;
+volatile int countdown = GAMETIME;
 volatile double spawn_prob;
 volatile int seed;
 extern int boardMatrix[ROWS][COLS];
 
 extern int TimerInterval3;
 extern int freq;
+
+// Increment of speed variables
+volatile int elapsed_time = 0;  				// Tracks elapsed time in real seconds
+volatile int sub_second_count = 0; 			// Sub-second timer counter
+int ticks_per_second = 25000000;   			// Initial timer interval (1 second for 25 MHz frequency)
+int current_interval = 25000000;  			// Current timer interval
 
 void TIMER0_IRQHandler (void)
 {
@@ -174,32 +181,89 @@ void TIMER3_IRQHandler (void)
 		if(p.game_state == CONTINUE){
 			if(gr.n_powerpills != 0 || gr.n_stdpills != 0){
 				
-				if(astar_interval >= aggressive_treshold){
+//				if(astar_interval >= aggressive_threshold){
+//					
+//					astar_interval = 0;
+//					if(aggressive_threshold > 4){
+//						aggressive_threshold --;
+//						TimerInterval3 = (int) (TimerInterval3 * factor);
+//						init_timer(3,0,0,3,TimerInterval3);
+//					}
+//					
+//					// A* implementation
+//					init_Route(&r);
+//					a_Star(boardMatrix,g.ghost_coord.pos,p.player_coord.pos,&r);
+//				}
+//				astar_interval += TimerInterval3/(float) freq;
+//				
+//				if(r.path_length>0){
+//					move_Ghost(&g,&r,&p);
+//				}
+//				
+//				if(g.vulnerable_timer !=0){
+//					g.vulnerable_timer -= (int) (TimerInterval3/freq);
+//					if(g.vulnerable_timer == 0){
+//						g.vulnerable = false;
+//					}
+//				}
+
+        // Increment the sub-second counter
+        sub_second_count += current_interval;
+
+        // When sub-second counter reaches 1 second worth of ticks
+        if (sub_second_count >= ticks_per_second) {
+						// Reset the sub-second counter
+            sub_second_count -= ticks_per_second;
+						// Increment elapsed time in seconds
+            elapsed_time++;
+        }
+
+        // Every 15 seconds, reduce the timer interval
+        if (elapsed_time >= 15) {
+            elapsed_time = 0;
 					
-					astar_interval = 0;
-					if(aggressive_treshold > 4){
-						aggressive_treshold --;
-						TimerInterval3 = (int) (TimerInterval3 * factor);
-						init_timer(3,0,0,3,TimerInterval3);
-					}
-					
-					// A* implementation
+            // Decrease the interval to make Blinky faster
+            if (current_interval > 5000000) { 						// Set a minimum interval
+                current_interval -= 5000000; 							// Reduce interval by 0.2s
+                init_timer(3,0,0,3,current_interval);
+            }
+        }
+						
+				if(p.player_coord.pos.x != p.player_coord.next_pos.x ||
+					p.player_coord.pos.x != p.player_coord.next_pos.y ||
+					countdown == GAMETIME){
+					// Performing a* algorithm
 					init_Route(&r);
 					a_Star(boardMatrix,g.ghost_coord.pos,p.player_coord.pos,&r);
 				}
-				astar_interval += TimerInterval3/(float) freq;
-				
+					
+				// Section to move ghost
 				if(r.path_length>0){
 					move_Ghost(&g,&r,&p);
 				}
-				
-				if(g.vulnerable_timer !=0){
-					g.vulnerable_timer -= (int) (TimerInterval3/freq);
-					if(g.vulnerable_timer == 0){
-						g.vulnerable = false;
-					}
-				}
-				
+
+//				// Section to perform the search path algorithm
+//				if(astar_interval == aggressive_threshold){
+//					// Performing a* algorithm
+//					init_Route(&r);
+//					a_Star(boardMatrix,g.ghost_coord.pos,p.player_coord.pos,&r);
+//					astar_interval = 0;
+//				}
+//				// astar_interval is a counter that makes compiting the algorithm every 10s
+//				astar_interval --;
+//				
+//				// Section to move ghost
+//				if(r.path_length>0){
+//					move_Ghost(&g,&r,&p);
+//				}
+//				
+//				// Section to make the ghost blue
+//				if(g.vulnerable_timer !=0){
+//					g.vulnerable_timer --;
+//					if(g.vulnerable_timer == 0){
+//						g.vulnerable = false;
+//					}
+//				}
 				
 			}
 		}

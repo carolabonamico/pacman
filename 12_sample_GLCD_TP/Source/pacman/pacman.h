@@ -35,6 +35,7 @@
 
 #define CONTINUE 0							// Continue flag
 #define PAUSE 1									// Pause flag
+#define GAMETIME 60							// Match duration
 
 // DEFINE FOR THE PRINTING FUNCTIONS
 #define OFFSET 4
