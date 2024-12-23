@@ -5,7 +5,8 @@
 /* -------------------- VARIABLES DECLARATION -------------------- */
 
 extern int pacmanMatrix_RIGHT[BOXSIZE][BOXSIZE];
-extern int direction;
+extern int direction;		
+extern int ticks_per_second;
 
 // Board matrix
 volatile int boardMatrix[ROWS][COLS] = {
@@ -123,4 +124,20 @@ void clear_Section(int i, int j, int direction){
 			}
 		}
   } 		
+}
+
+int sub_Counter(int elapsed_time,int sub_second_count,int current_interval){
+
+	// Increment the sub-second counter
+  sub_second_count += current_interval;
+
+  // When sub-second counter reaches 1 second worth of ticks
+  if(sub_second_count >= ticks_per_second){
+		// Reset the sub-second counter
+		sub_second_count -= ticks_per_second;
+		// Increment elapsed time in seconds
+    elapsed_time++;
+  }
+	
+	return elapsed_time;
 }

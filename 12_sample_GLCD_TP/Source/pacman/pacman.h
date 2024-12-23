@@ -155,6 +155,7 @@ void init_Ghost(ghost *g);
 void init_Grid(grid *gr);
 void init_Route(route *r);
 void init_ClosedList(int closedList[ROWS][COLS]);
+int sub_Counter(int elapsed_time,int sub_second_count,int current_interval);
 
 /* astar.c */
 int is_Valid(int row,int col);

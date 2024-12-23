@@ -45,10 +45,15 @@ extern int TimerInterval3;
 extern int freq;
 
 // Increment of speed variables
-volatile int elapsed_time = 0;  				// Tracks elapsed time in real seconds
-volatile int sub_second_count = 0; 			// Sub-second timer counter
-int ticks_per_second = 25000000;   			// Initial timer interval (1 second for 25 MHz frequency)
-int current_interval = 25000000;  			// Current timer interval
+volatile int elapsed_time_speed = 0;  				// Tracks elapsed time in real seconds
+volatile int sub_second_count_speed = 0; 			// Sub-second timer counter
+int ticks_per_second = 25000000;   						// Initial timer interval (1 second for 25 MHz frequency)
+int current_interval_speed = 25000000;  			// Current timer interval
+
+// Blue ghost interval
+volatile int elapsed_time_blue = 0;  				
+volatile int sub_second_count_blue = 0;						
+int current_interval_blue = 25000000;  			
 
 void TIMER0_IRQHandler (void)
 {
@@ -207,26 +212,28 @@ void TIMER3_IRQHandler (void)
 //					}
 //				}
 
-        // Increment the sub-second counter
-        sub_second_count += current_interval;
+//        // Increment the sub-second counter
+//        sub_second_count += current_interval;
 
-        // When sub-second counter reaches 1 second worth of ticks
-        if (sub_second_count >= ticks_per_second) {
-						// Reset the sub-second counter
-            sub_second_count -= ticks_per_second;
-						// Increment elapsed time in seconds
-            elapsed_time++;
-        }
+//        // When sub-second counter reaches 1 second worth of ticks
+//        if (sub_second_count >= ticks_per_second) {
+//						// Reset the sub-second counter
+//            sub_second_count -= ticks_per_second;
+//						// Increment elapsed time in seconds
+//            elapsed_time++;
+//        }
 
+				elapsed_time_speed = sub_Counter(elapsed_time_speed,sub_second_count_speed,current_interval_speed);
+				
         // Every 15 seconds, reduce the timer interval
-        if (elapsed_time >= 15) {
-            elapsed_time = 0;
+        if(elapsed_time_speed >= 15){
+           elapsed_time_speed = 0;
 					
-            // Decrease the interval to make Blinky faster
-            if (current_interval > 5000000) { 						// Set a minimum interval
-                current_interval -= 5000000; 							// Reduce interval by 0.2s
-                init_timer(3,0,0,3,current_interval);
-            }
+           // Decrease the interval to make Blinky faster
+           if(current_interval_speed > 5000000){ 						// Set a minimum interval
+							current_interval_speed -= 5000000; 							// Reduce interval by 0.2s
+							init_timer(3,0,0,3,current_interval_speed);
+           }
         }
 						
 				if(p.player_coord.pos.x != p.player_coord.next_pos.x ||
@@ -241,6 +248,24 @@ void TIMER3_IRQHandler (void)
 				if(r.path_length>0){
 					move_Ghost(&g,&r,&p);
 				}
+				
+				// Section to make the ghost blue
+				if(g.vulnerable == true){
+					elapsed_time_blue = sub_Counter(elapsed_time_blue,sub_second_count_blue,current_interval_blue);
+					if(elapsed_time_blue > 10){
+						elapsed_time_blue = 0;
+						g.vulnerable = false;
+					}
+				}
+	
+				
+//				// Section to make the ghost blue
+//				if(g.vulnerable_timer !=0){
+//					g.vulnerable_timer --;
+//					if(g.vulnerable_timer == 0){
+//						g.vulnerable = false;
+//					}
+//				}
 
 //				// Section to perform the search path algorithm
 //				if(astar_interval == aggressive_threshold){
