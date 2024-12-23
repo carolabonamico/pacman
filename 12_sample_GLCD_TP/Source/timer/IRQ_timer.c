@@ -30,10 +30,10 @@ extern grid gr;
 extern ghost g;
 
 extern route r;
-extern cell cellDetails[ROWS][COLS];
-extern node openList[ROWS * COLS];
-extern node current;
-extern int closedList[ROWS][COLS];
+//extern cell cellDetails[ROWS][COLS];
+//extern node openList[ROWS * COLS];
+//extern node current;
+//extern int closedList[ROWS][COLS];
 volatile int astar_interval = 10;
 
 extern int direction;
@@ -184,7 +184,8 @@ void TIMER3_IRQHandler (void)
 					astar_interval = 0;
 					// A* implementation
 					init_Route(&r);
-					a_Star(boardMatrix,g.ghost_coord.pos,p.player_coord.pos,&r,cellDetails,openList,&current,closedList);
+//					a_Star(boardMatrix,g.ghost_coord.pos,p.player_coord.pos,&r,cellDetails,openList,&current,closedList);
+						a_Star(boardMatrix,g.ghost_coord.pos,p.player_coord.pos,&r);
 				}
 				astar_interval ++;
 				

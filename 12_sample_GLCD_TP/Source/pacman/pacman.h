@@ -158,8 +158,10 @@ void init_ClosedList(int closedList[ROWS][COLS]);
 int is_Valid(int row,int col);
 int is_Unblocked(int boardMatrix[ROWS][COLS],int row,int col);
 int is_Destination(int row, int col, node dest);
-void a_Star(int boardMatrix[ROWS][COLS],node start,node dest,route *r,
-						cell cellDetails[ROWS][COLS],node openList[ROWS * COLS],
-						node *current, int closedList[ROWS][COLS]);
+//void a_Star(int boardMatrix[ROWS][COLS],node start,node dest,route *r,
+//						cell cellDetails[ROWS][COLS],node openList[ROWS * COLS],
+//						node *current, int closedList[ROWS][COLS]);
+
+void a_Star(int boardMatrix[ROWS][COLS], node start, node dest, route *r);
 
 #endif
