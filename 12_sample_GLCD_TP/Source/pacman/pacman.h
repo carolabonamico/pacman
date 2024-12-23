@@ -84,6 +84,7 @@ typedef struct{
 	node path[ROWS*COLS];
 	int path_length;
 	bool vulnerable;
+	int vulnerable_timer;
 } ghost;
 
 typedef struct{

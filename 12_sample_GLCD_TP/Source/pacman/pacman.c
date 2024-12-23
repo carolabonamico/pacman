@@ -226,6 +226,7 @@ void move_Player(player *p, grid *gr, int direction, ghost *g){
 				update_NewLife(p);
 				// Bool for vulnerable ghost
 				g->vulnerable = true;
+				g->vulnerable_timer = 10;
 				break;
 		}
 	} else {

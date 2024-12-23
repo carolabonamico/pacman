@@ -46,7 +46,6 @@ route r;
 extern cell cellDetails[ROWS][COLS];
 extern node openList[ROWS * COLS];
 extern node current;
-//extern int grid_test[ROW][COL];
 
 volatile int direction = 0;
 extern int ghostMatrix[BOXSIZE][BOXSIZE];
@@ -56,8 +55,8 @@ extern int pacmanMatrix_UP[BOXSIZE][BOXSIZE];
 extern int pacmanMatrix_DOWN[BOXSIZE][BOXSIZE];
 extern int boardMatrix[ROWS][COLS];
 
-node start = {0, 0}; // Start at (0, 0)
-node dest = {8, 9};  // Destination at (8, 9)
+volatile int TimerInterval3 = 0x17D7840;
+volatile int freq = 0x17D7840;
 
 
 int main(void)
@@ -74,7 +73,6 @@ int main(void)
 	init_GameSpace(&gr);
 	init_Player(&p);
 	init_Ghost(&g);
-//	a_Star(boardMatrix,g.ghost_coord.pos,p.player_coord.pos,&r,cellDetails,openList,&current);
 	
 	joystick_init();
 	
@@ -85,7 +83,7 @@ int main(void)
 	init_timer(1,0,0,3,0x17D7840);			// 1s timer for the game time
 	init_timer(2,0,1,3,0x2DC6C0);				// 20ms timer for the Pacman controller
 //	init_timer(3,0,1,3,0xEE6B280);			// 10s timer for the a* algorithm
-	init_timer(3,0,0,3,0x17D7840);			// 1s timer for the ghost movement
+	init_timer(3,0,0,3,TimerInterval3);			// 1s timer for the ghost movement
 
 	enable_RIT();	
   enable_timer(0);

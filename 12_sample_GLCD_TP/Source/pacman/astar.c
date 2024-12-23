@@ -4,11 +4,6 @@
 
 extern route r;
 
-//cell cellDetails[ROWS][COLS];
-//node openList[ROWS * COLS];
-//node current;
-//int closedList[ROWS][COLS] = {0};
-
 /* -------------------- FUNCTIONS DEFINITION -------------------- */
 
 // Function to check if a cell is valid (within grid boundaries)
@@ -109,7 +104,6 @@ void a_Star(int boardMatrix[ROWS][COLS], node start, node dest, route *r) {
                 pathRow = tempRow;
                 pathCol = tempCol;
             }
-            r->path[r->path_length++] = start; // Add the start node to the path
             return; // Path found
         }
 

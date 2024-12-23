@@ -22,7 +22,7 @@
 ** Returned value:		None
 **
 ******************************************************************************/
-extern unsigned char led_value;					/* defined in funct_led								*/
+extern unsigned char led_value;							/* defined in funct_led								*/
 unsigned char ledval = 0xA5;
 
 extern player p;
@@ -30,21 +30,18 @@ extern grid gr;
 extern ghost g;
 
 extern route r;
-//extern cell cellDetails[ROWS][COLS];
-//extern node openList[ROWS * COLS];
-//extern node current;
-//extern int closedList[ROWS][COLS];
-volatile int astar_interval = 10;
+volatile float astar_interval = 10;					// Starting interval after which the a* is computed
+volatile float aggressive_treshold = 10;
+volatile float factor = 2.0/3;
 
 extern int direction;
 volatile int countdown = 60;
 volatile double spawn_prob;
 volatile int seed;
-
-extern node dest;
-extern node start;
-extern route perc;
 extern int boardMatrix[ROWS][COLS];
+
+extern int TimerInterval3;
+extern int freq;
 
 void TIMER0_IRQHandler (void)
 {
@@ -177,21 +174,32 @@ void TIMER3_IRQHandler (void)
 		if(p.game_state == CONTINUE){
 			if(gr.n_powerpills != 0 || gr.n_stdpills != 0){
 				
-//					controller_Player(direction,&g.ghost_coord);
-//					move_Ghost(&g,&p,&gr,direction);
-				
-				if(astar_interval == 10){
+				if(astar_interval >= aggressive_treshold){
+					
 					astar_interval = 0;
+					if(aggressive_treshold > 4){
+						aggressive_treshold --;
+						TimerInterval3 = (int) (TimerInterval3 * factor);
+						init_timer(3,0,0,3,TimerInterval3);
+					}
+					
 					// A* implementation
 					init_Route(&r);
-//					a_Star(boardMatrix,g.ghost_coord.pos,p.player_coord.pos,&r,cellDetails,openList,&current,closedList);
-						a_Star(boardMatrix,g.ghost_coord.pos,p.player_coord.pos,&r);
+					a_Star(boardMatrix,g.ghost_coord.pos,p.player_coord.pos,&r);
 				}
-				astar_interval ++;
+				astar_interval += TimerInterval3/(float) freq;
 				
 				if(r.path_length>0){
 					move_Ghost(&g,&r,&p);
 				}
+				
+				if(g.vulnerable_timer !=0){
+					g.vulnerable_timer -= (int) (TimerInterval3/freq);
+					if(g.vulnerable_timer == 0){
+						g.vulnerable = false;
+					}
+				}
+				
 				
 			}
 		}
