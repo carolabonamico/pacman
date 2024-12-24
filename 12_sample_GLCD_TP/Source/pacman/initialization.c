@@ -86,7 +86,7 @@ void init_Ghost(ghost *g){
 	g->ghost_coord.pos.x = 11;
 	g->ghost_coord.pos.y = 11;
 	g->vulnerable = false;
-	g->vulnerable_timer = 0;
+	g->eaten = false;
 }
 
 // GRID

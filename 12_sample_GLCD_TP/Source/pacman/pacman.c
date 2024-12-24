@@ -192,50 +192,70 @@ void controller_Player(int direction, coord *c){
 }
 
 // FUNCTION TO PERFORM NEXT STEP OF THE PLAYER
-void move_Player(player *p, grid *gr, int direction, ghost *g){
-	
-	int current_x = p->player_coord.pos.x;
-	int current_y = p->player_coord.pos.y;
-	
-	if(boardMatrix[p->player_coord.next_pos.y][p->player_coord.next_pos.x] != WALL && 
-		boardMatrix[p->player_coord.next_pos.y][p->player_coord.next_pos.x] != DOOR &&
-		!(p->player_coord.next_pos.x == g->ghost_coord.pos.x && p->player_coord.next_pos.y == g->ghost_coord.pos.y) &&
-		direction != 0){
-		// Updating player position
-		p->player_coord.pos.x = p->player_coord.next_pos.x;
-		p->player_coord.pos.y = p->player_coord.next_pos.y;
-			
-		redraw_Pacman(current_x,current_y,p->player_coord.next_pos.x,p->player_coord.next_pos.y,direction);
-		
-		// Updating the scores and the matrix
-		switch(boardMatrix[p->player_coord.next_pos.y][p->player_coord.next_pos.x]){
-			case STDSCORE:
-				p->score += STDSCORE;
-				update_ScoreHeader(p->score);
-				boardMatrix[p->player_coord.next_pos.y][p->player_coord.next_pos.x] = EMPTY;
-				gr->n_stdpills--;
-				// Check for incrementing lives
-				update_NewLife(p);
-				break;
-			case POWERSCORE:
-				p->score += POWERSCORE;
-				update_ScoreHeader(p->score);
-				boardMatrix[p->player_coord.next_pos.y][p->player_coord.next_pos.x] = EMPTY;
-				gr->n_powerpills--;
-				// Check for incrementing lives
-				update_NewLife(p);
-				// Bool for vulnerable ghost
-				g->vulnerable = true;
-				g->vulnerable_timer = 10;
-				break;
-		}
-	} else {
-		direction = 0;
-		p->player_coord.next_pos.x = p->player_coord.pos.x;
-		p->player_coord.next_pos.y = p->player_coord.pos.y;
-	}
-	
+void move_Player(player *p, grid *gr, int direction, ghost *g) {
+    int current_x = p->player_coord.pos.x;
+    int current_y = p->player_coord.pos.y;
+
+    if (boardMatrix[p->player_coord.next_pos.y][p->player_coord.next_pos.x] != WALL &&
+        boardMatrix[p->player_coord.next_pos.y][p->player_coord.next_pos.x] != DOOR &&
+        direction != 0) {
+
+        // Check for collision with ghost
+        if (p->player_coord.next_pos.x == g->ghost_coord.pos.x &&
+            p->player_coord.next_pos.y == g->ghost_coord.pos.y && !g->eaten) {
+            
+            if (g->vulnerable) {
+                // Pacman eats the ghost
+                p->score += BLINKYSCORE;
+                update_ScoreHeader(p->score);
+                g->eaten = true;
+                g->vulnerable = false;
+
+                // Remove ghost from the maze
+                boardMatrix[g->ghost_coord.pos.y][g->ghost_coord.pos.x] = EMPTY;
+            } else {
+                // If the ghost is not vulnerable, Pacman cannot eat it
+                // Stop Pacman's movement
+                p->player_coord.next_pos.x = current_x;
+                p->player_coord.next_pos.y = current_y;
+                direction = 0;
+
+                return; // Exit as Pacman stays in place
+            }
+        }
+
+        // Update Pacman's position
+        p->player_coord.pos.x = p->player_coord.next_pos.x;
+        p->player_coord.pos.y = p->player_coord.next_pos.y;
+
+        redraw_Pacman(current_x, current_y, p->player_coord.pos.x, p->player_coord.pos.y, direction);
+
+        // Update the scores and grid
+        switch (boardMatrix[p->player_coord.next_pos.y][p->player_coord.pos.x]) {
+            case STDSCORE:
+                p->score += STDSCORE;
+                update_ScoreHeader(p->score);
+                boardMatrix[p->player_coord.next_pos.y][p->player_coord.pos.x] = EMPTY;
+                gr->n_stdpills--;
+                update_NewLife(p);
+                break;
+            case POWERSCORE:
+                p->score += POWERSCORE;
+                update_ScoreHeader(p->score);
+                boardMatrix[p->player_coord.next_pos.y][p->player_coord.pos.x] = EMPTY;
+                gr->n_powerpills--;
+                update_NewLife(p);
+                g->vulnerable = true; // Make ghost vulnerable
+                break;
+        }
+    } else {
+        // Pacman stays in place if the move is invalid
+        direction = 0;
+        p->player_coord.next_pos.x = p->player_coord.pos.x;
+        p->player_coord.next_pos.y = p->player_coord.pos.y;
+    }
 }
+
 
 int rand_Range(int min, int max){
     return min + (rand() % (max - min + 1));

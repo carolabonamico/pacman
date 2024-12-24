@@ -15,6 +15,7 @@
 // DEFINING THE SCORES AND NUMBER OF PILLS 
 #define STDSCORE 10							// Score associated to a standard pill
 #define POWERSCORE 50						// Score associated to a power pill
+#define BLINKYSCORE 100					// Score associated to Blinky
 #define NMAXPOWERPILLS 6				// Maximum number of power pills
 #define N_STDPILLS 240					// Tot number of standard pills
 #define INITLIVES 1							// Initial number of lives
@@ -85,7 +86,7 @@ typedef struct{
 	node path[ROWS*COLS];
 	int path_length;
 	bool vulnerable;
-	int vulnerable_timer;
+	bool eaten;
 } ghost;
 
 typedef struct{
@@ -104,8 +105,8 @@ typedef struct {
 } cell;
 
 typedef struct {
-    node path[ROWS * COLS];  	// Path array
-    int path_length;        // Length of the path
+    node path[ROWS * COLS];  		// Path array
+    int path_length;        		// Length of the path
 } route;
 
 /*
@@ -161,10 +162,6 @@ int sub_Counter(int elapsed_time,int sub_second_count,int current_interval);
 int is_Valid(int row,int col);
 int is_Unblocked(int boardMatrix[ROWS][COLS],int row,int col);
 int is_Destination(int row, int col, node dest);
-//void a_Star(int boardMatrix[ROWS][COLS],node start,node dest,route *r,
-//						cell cellDetails[ROWS][COLS],node openList[ROWS * COLS],
-//						node *current, int closedList[ROWS][COLS]);
-
 void a_Star(int boardMatrix[ROWS][COLS], node start, node dest, route *r);
 
 #endif
