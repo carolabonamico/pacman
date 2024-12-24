@@ -129,3 +129,38 @@ void a_Star(int boardMatrix[ROWS][COLS], node start, node dest, route *r) {
         }
     }
 }
+
+// FUNCTION TO RANDOMIZE DESTINATION WHEN BLINKY IS BLUE
+
+// Function to compute Manhattan distance
+int distance_Manhattan(int x1, int y1, int x2, int y2) {
+    return abs(x1 - x2) + abs(y1 - y2);
+}
+
+// Function to find the farthest empty cell from Pac-Man
+void find_NewDest(int boardMatrix[ROWS][COLS], int pacman_x, int pacman_y, node *destination) {
+			
+		int i, j;
+		int max_distance = -1;
+	
+    destination->x = -1;
+		destination->y = -1;
+
+    // Iterate over the maze to find the farthest empty cell (0)
+    for (i = 0; i < ROWS; i++) {
+        for (j = 0; j < COLS; j++) {
+            // Check if the cell is empty (0, 10, or 50) and not a wall (1)
+            if (boardMatrix[i][j] == EMPTY || boardMatrix[i][j] == STDSCORE || boardMatrix[i][j] == POWERSCORE) {
+                // Calculate the Manhattan distance from Pac-Man to this empty cell
+                int distance = distance_Manhattan(i, j, pacman_x, pacman_y);
+                
+                // Update the destination if this cell is farther from Pac-Man
+                if (distance > max_distance) {
+                    max_distance = distance;
+                    destination->x = i;
+                    destination->y = j;
+                }
+            }
+        }
+    }
+}

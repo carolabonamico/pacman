@@ -163,5 +163,7 @@ int is_Valid(int row,int col);
 int is_Unblocked(int boardMatrix[ROWS][COLS],int row,int col);
 int is_Destination(int row, int col, node dest);
 void a_Star(int boardMatrix[ROWS][COLS], node start, node dest, route *r);
+int distance_Manhattan(int x1, int y1, int x2, int y2);
+void find_NewDest(int boardMatrix[ROWS][COLS], int pacman_x, int pacman_y, node *destination);
 
 #endif

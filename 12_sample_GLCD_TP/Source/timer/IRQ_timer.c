@@ -55,7 +55,8 @@ int current_interval_speed = 25000000;  			// Current timer interval
 // Blue ghost interval
 volatile int elapsed_time_blue = 0;  				
 volatile int sub_second_count_blue = 0;						
-int current_interval_blue = 25000000;  	
+int current_interval_blue = 25000000;
+node blue_dest;
 
 // 3s respawn
 volatile int elapsed_time_respawn = 0;  				
@@ -210,9 +211,17 @@ void TIMER3_IRQHandler (void)
 					if(p.player_coord.pos.x != p.player_coord.next_pos.x ||
 						p.player_coord.pos.x != p.player_coord.next_pos.y ||
 						countdown == GAMETIME){
+							
 						// Performing a* algorithm
 						init_Route(&r);
-						a_Star(boardMatrix,g.ghost_coord.pos,p.player_coord.pos,&r);
+							
+						if(g.vulnerable != true){
+							a_Star(boardMatrix,g.ghost_coord.pos,p.player_coord.pos,&r);
+						}else{
+							find_NewDest(boardMatrix,p.player_coord.pos.x,p.player_coord.pos.y,&blue_dest);
+							a_Star(boardMatrix,g.ghost_coord.pos,blue_dest,&r);
+						}
+							
 					}
 						
 					// Section to move ghost
