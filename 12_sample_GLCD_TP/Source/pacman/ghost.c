@@ -30,6 +30,7 @@ void move_Ghost(ghost *ghost, route *r, player *p) {
 
     // Check if the ghost has been eaten
     if (ghost->eaten) {
+			
         return; // Ghost remains out of play until respawn logic
     }
 
