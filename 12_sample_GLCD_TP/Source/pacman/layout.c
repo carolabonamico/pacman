@@ -126,15 +126,15 @@ void clear_Section(int i, int j, int direction){
   } 		
 }
 
-int sub_Counter(int elapsed_time,int sub_second_count,int current_interval){
-
+int sub_Counter(int elapsed_time,int *sub_second_count, int current_interval, int ticks_per_second){
+	
 	// Increment the sub-second counter
-  sub_second_count += current_interval;
+  *sub_second_count += current_interval;
 
   // When sub-second counter reaches 1 second worth of ticks
-  if(sub_second_count >= ticks_per_second){
+  if(*sub_second_count >= ticks_per_second){
 		// Reset the sub-second counter
-		sub_second_count -= ticks_per_second;
+		*sub_second_count -= ticks_per_second;
 		// Increment elapsed time in seconds
     elapsed_time++;
   }

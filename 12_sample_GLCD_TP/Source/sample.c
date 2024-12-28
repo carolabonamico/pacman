@@ -55,7 +55,8 @@ extern int pacmanMatrix_UP[BOXSIZE][BOXSIZE];
 extern int pacmanMatrix_DOWN[BOXSIZE][BOXSIZE];
 extern int boardMatrix[ROWS][COLS];
 
-volatile int TimerInterval3 = 0x17D7840;
+//volatile int TimerInterval3 = 0x17D7840;
+volatile int TimerInterval3 = 0x2DC6C0;
 volatile int freq = 0x17D7840;
 
 
