@@ -58,6 +58,11 @@ volatile int sub_second_count_blue = 0;
 int current_interval_blue = 25000000;
 node blue_dest;
 
+// 1s countdown
+volatile int elapsed_time_countdown = 0;  				
+volatile int sub_second_count_countdown = 0;  						
+int current_interval_countdown = 25000000;
+
 // 3s respawn
 volatile int elapsed_time_respawn = 0;  				
 volatile int sub_second_count_respawn = 0;  						
@@ -107,13 +112,14 @@ void TIMER1_IRQHandler (void)
 {
 	if(LPC_TIM1->IR & 1) // MR0
 	{ 
-			countdown --;
-			if (countdown<0){
-				display_GameOver();
-			}else{
-			update_TimerHeader(countdown);
-//			enable_timer(1);
-			}
+//			countdown --;
+//		
+//			if (countdown<0){
+//				display_GameOver();
+//			}else{
+//			update_TimerHeader(countdown);
+////			enable_timer(1);
+//			}
 			
 		LPC_TIM1->IR = 1;			//clear interrupt flag
 	}
@@ -152,12 +158,14 @@ void TIMER2_IRQHandler (void)
 //		disable_timer(2);
 		
 		if(p.game_state == CONTINUE){
+			
 			if(gr.n_powerpills == 0 && gr.n_stdpills == 0){
 					display_Win();
-				} else {
+			} else {
 					controller_Player(direction,&p.player_coord);
 					move_Player(&p,&gr,direction,&g);
-				}
+			}
+				
 		}
 		
 //		enable_timer(2);
@@ -194,9 +202,8 @@ void TIMER3_IRQHandler (void)
 		if(p.game_state == CONTINUE){
 			if(gr.n_powerpills != 0 || gr.n_stdpills != 0){
 
+				// Every 15 seconds, reduce the timer interval
 				elapsed_time_speed = sub_Counter(elapsed_time_speed,sub_second_count_speed,current_interval_speed);
-				
-        // Every 15 seconds, reduce the timer interval
         if(elapsed_time_speed >= 15){
            elapsed_time_speed = 0;
 					
@@ -230,7 +237,11 @@ void TIMER3_IRQHandler (void)
 					}
 					
 					// Section to make the ghost blue
-					if(g.vulnerable == true){
+					if(g.vulnerable == true && g.reset_counter == true){
+						elapsed_time_blue = 0;
+						g.reset_counter = false;
+					}
+					if(g.vulnerable == true && g.reset_counter == false){
 						elapsed_time_blue = sub_Counter(elapsed_time_blue,sub_second_count_blue,current_interval_blue);
 						if(elapsed_time_blue > 10){
 							elapsed_time_blue = 0;
@@ -249,7 +260,20 @@ void TIMER3_IRQHandler (void)
 					
 				}
 				
+				// Countdown section
+				elapsed_time_countdown = sub_Counter(elapsed_time_countdown,sub_second_count_countdown,current_interval_countdown);
+				if(elapsed_time_countdown > 1){
+					elapsed_time_countdown = 0;
+					countdown --;
+					if (countdown<0){
+						display_GameOver();
+					}else{
+					update_TimerHeader(countdown);
+					}		
+				}
+				
 			}
+			
 		}
 		
 		LPC_TIM3->IR = 1;			//clear interrupt flag

@@ -246,6 +246,7 @@ void move_Player(player *p, grid *gr, int direction, ghost *g) {
                 gr->n_powerpills--;
                 update_NewLife(p);
                 g->vulnerable = true; // Make ghost vulnerable
+								g->reset_counter = true;
                 break;
         }
     } else {

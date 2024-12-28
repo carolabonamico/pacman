@@ -87,6 +87,7 @@ typedef struct{
 	int path_length;
 	bool vulnerable;
 	bool eaten;
+	bool reset_counter;
 } ghost;
 
 typedef struct{
