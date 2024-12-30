@@ -77,21 +77,11 @@ void TIMER0_IRQHandler (void)
 		LPC_TIM0->IR = 1;			//clear interrupt flag
 	}
 	else if(LPC_TIM0->IR & 2){ // MR1
-		// your code	
+
 		LPC_TIM0->IR = 2;			// clear interrupt flag 
 	}
 	else if(LPC_TIM0->IR & 4){ // MR2
-//		disable_timer(0);
-		
-		// Generating the seed for the random spawn of power pills in space
-		seed = LPC_TIM1->TC;
-		if(gr.n_powerpills<NMAXPOWERPILLS){
-		rand_PowerPill(&gr,&p);
-		}
-		
-//		enable_timer(0);
 
-		
 		LPC_TIM0->IR = 4;			// clear interrupt flag 
 	}
 	else if(LPC_TIM0->IR & 8){ // MR3
@@ -114,14 +104,6 @@ void TIMER1_IRQHandler (void)
 {
 	if(LPC_TIM1->IR & 1) // MR0
 	{ 
-//			countdown --;
-//		
-//			if (countdown<0){
-//				display_GameOver();
-//			}else{
-//			update_TimerHeader(countdown);
-////			enable_timer(1);
-//			}
 			
 		LPC_TIM1->IR = 1;			//clear interrupt flag
 	}
@@ -154,6 +136,13 @@ void TIMER2_IRQHandler (void)
 {
 	if(LPC_TIM2->IR & 1) // MR0
 	{ 
+
+		// Generating the seed for the random spawn of power pills in space
+		seed = LPC_TIM1->TC;
+		if(gr.n_powerpills<NMAXPOWERPILLS){
+			rand_PowerPill(&gr,&p);
+		}
+		
 		LPC_TIM2->IR = 1;			//clear interrupt flag
 	}
 	else if(LPC_TIM2->IR & 2){ // MR1
@@ -165,7 +154,7 @@ void TIMER2_IRQHandler (void)
 		LPC_TIM2->IR = 4;			// clear interrupt flag 
 	}
 	else if(LPC_TIM2->IR & 8){ // MR3
-		// your code	
+	
 		LPC_TIM2->IR = 8;			// clear interrupt flag 
 	} 
 
@@ -284,20 +273,6 @@ void TIMER3_IRQHandler (void)
 		LPC_TIM3->IR = 1;			//clear interrupt flag
 	}
 	else if(LPC_TIM3->IR & 2){ // MR1
-		
-//		disable_timer(3);
-		
-		if(p.game_state == CONTINUE){
-			if(gr.n_powerpills != 0 || gr.n_stdpills != 0){
-				
-//				// A* implementation
-//				init_Route(&r);
-//				a_Star(boardMatrix,g.ghost_coord.pos,p.player_coord.pos,&r,cellDetails,openList,&current,closedList);
-
-				}
-		}
-		
-//		enable_timer(3);
 
 		LPC_TIM3->IR = 2;			// clear interrupt flag 
 	}

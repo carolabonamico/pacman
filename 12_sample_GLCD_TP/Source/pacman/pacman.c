@@ -295,7 +295,7 @@ void rand_PowerPill(grid *gr, player *p){
 		srand(seed);
 		int rand_time = rand_Range(1,5) * 25000000;
 
-		init_timer(0,0,2,7,rand_time);
+		init_timer(2,0,0,7,rand_time);
 
 }
 

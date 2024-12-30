@@ -53,15 +53,15 @@ void decrement_Life(player *p){
 void menu_Pause(player *p, int direction){
 	if(p->game_state == CONTINUE){
 		GUI_Text(93,160,(uint8_t*) " PAUSE ", Red, White);
-		disable_timer(0);
-		disable_timer(1);
+//		disable_timer(0);
+//		disable_timer(1);
 		disable_timer(2);
 		disable_timer(3);
 		p->game_state = PAUSE;
 	} else {
 		clear_Section(9,9,direction);
-		enable_timer(0);
-		enable_timer(1);
+//		enable_timer(0);
+//		enable_timer(1);
 		enable_timer(2);
 		enable_timer(3);
 		p->game_state = CONTINUE;
@@ -69,8 +69,8 @@ void menu_Pause(player *p, int direction){
 }
 
 void display_GameOver(){
-	disable_timer(0);
-	disable_timer(1);
+//	disable_timer(0);
+//	disable_timer(1);
 	disable_timer(2);
 	disable_timer(3);
 	disable_RIT();
@@ -80,8 +80,8 @@ void display_GameOver(){
 
 void display_Win(){
 	GUI_Text(83,160,(uint8_t*) " VICTORY ", Red, White);
-	disable_timer(0);
-	disable_timer(1);
+//	disable_timer(0);
+//	disable_timer(1);
 	disable_timer(2);
 	disable_timer(3);
 	disable_RIT();
