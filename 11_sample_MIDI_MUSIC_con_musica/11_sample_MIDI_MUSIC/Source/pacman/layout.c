@@ -4,9 +4,14 @@
 
 /* -------------------- VARIABLES DECLARATION -------------------- */
 
+extern int pacmanMatrix_UP[BOXSIZE][BOXSIZE];
+extern int pacmanMatrix_DOWN[BOXSIZE][BOXSIZE];
+extern int pacmanMatrix_LEFT[BOXSIZE][BOXSIZE];
 extern int pacmanMatrix_RIGHT[BOXSIZE][BOXSIZE];
+extern int ghostMatrix[BOXSIZE][BOXSIZE];
 extern int direction;		
 extern int ticks_per_second;
+extern ghost g;
 
 // Board matrix
 volatile int boardMatrix[ROWS][COLS] = {
@@ -53,13 +58,13 @@ void decrement_Life(player *p){
 void menu_Pause(player *p, int direction){
 	if(p->game_state == CONTINUE){
 		GUI_Text(93,160,(uint8_t*) " PAUSE ", Red, White);
-//		disable_timer(0);
-//		disable_timer(1);
+		disable_timer(0);
+		disable_timer(1);
 		disable_timer(2);
 		disable_timer(3);
 		p->game_state = PAUSE;
 	} else {
-		clear_Section(9,9,direction);
+		clear_Section(9,9,direction,p,&g);
 //		enable_timer(0);
 //		enable_timer(1);
 		enable_timer(2);
@@ -69,8 +74,8 @@ void menu_Pause(player *p, int direction){
 }
 
 void display_GameOver(){
-//	disable_timer(0);
-//	disable_timer(1);
+	disable_timer(0);
+	disable_timer(1);
 	disable_timer(2);
 	disable_timer(3);
 	disable_RIT();
@@ -80,14 +85,14 @@ void display_GameOver(){
 
 void display_Win(){
 	GUI_Text(83,160,(uint8_t*) " VICTORY ", Red, White);
-//	disable_timer(0);
-//	disable_timer(1);
+	disable_timer(0);
+	disable_timer(1);
 	disable_timer(2);
 	disable_timer(3);
 	disable_RIT();
 }
 
-void clear_Section(int i, int j, int direction){
+void clear_Section(int i, int j, int direction, player *p, ghost *g){
 	uint16_t x = 9;
 	uint16_t y = 9;
 
@@ -106,22 +111,25 @@ void clear_Section(int i, int j, int direction){
 					break;
 				default:
 					break;
-				
-				// CASE FOR THE GHOST
-				
-//				case PACMANPOS:
-//					draw_WallFull(x,y,Black,BOXSIZE);
-//					if(direction == DIRUP){
-//						draw_Character(x,y,pacmanMatrix_UP,Yellow);
-//					} else if (direction == DIRDOWN){
-//						draw_Character(x,y,pacmanMatrix_DOWN,Yellow); 
-//					} else if (direction == DIRLEFT){
-//						draw_Character(x,y,pacmanMatrix_LEFT,Yellow);
-//					}	else if (direction == DIRRIGHT){
-//						draw_Character(x,y,pacmanMatrix_RIGHT,Yellow); 
-//					}
-			
 			}
+				
+				if(x == p->player_coord.pos.x && y == p->player_coord.pos.y){
+					draw_WallFull(x,y,Black,BOXSIZE);
+					if(p->last_direction == DIRUP){
+						draw_Character(x,y,pacmanMatrix_UP,Yellow);
+					} else if (p->last_direction == DIRDOWN){
+						draw_Character(x,y,pacmanMatrix_DOWN,Yellow); 
+					} else if (p->last_direction == DIRLEFT){
+						draw_Character(x,y,pacmanMatrix_LEFT,Yellow);
+					}	else if (p->last_direction == DIRRIGHT){
+						draw_Character(x,y,pacmanMatrix_RIGHT,Yellow); 
+					}
+				} else if(x == g->ghost_coord.pos.x && y == g->ghost_coord.pos.y){
+					draw_WallFull(x,y,Black,BOXSIZE);
+					int color = (g->vulnerable) ? Cyan : Red;
+					draw_Character(g->ghost_coord.pos.x, g->ghost_coord.pos.y, ghostMatrix, color);
+				}
+
 		}
   } 		
 }

@@ -78,6 +78,7 @@ typedef struct{
 	int nlives;										// Number of current lives
 	int score;										// Current score
 	int game_state;								// If game is in pause or not
+	int last_direction; 					// Last coded direction taken before a wall
 } player;
 
 typedef struct{
@@ -141,7 +142,7 @@ void redraw_Pacman(int current_x, int current_y, int next_x, int next_y, int dir
 /* layout.c */
 void decrement_Life(player *p);
 // Pop-up functions
-void clear_Section(int i, int j, int direction);
+void clear_Section(int i, int j, int direction, player *p, ghost *g);
 void menu_Pause(player *p, int direction);
 void display_GameOver(void);
 void display_Win(void);

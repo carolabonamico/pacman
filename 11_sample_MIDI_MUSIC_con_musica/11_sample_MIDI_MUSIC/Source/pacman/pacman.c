@@ -229,6 +229,7 @@ void move_Player(player *p, grid *gr, int direction, ghost *g) {
         p->player_coord.pos.y = p->player_coord.next_pos.y;
 
         redraw_Pacman(current_x, current_y, p->player_coord.pos.x, p->player_coord.pos.y, direction);
+				p->last_direction = direction;
 
         // Update the scores and grid
         switch (boardMatrix[p->player_coord.next_pos.y][p->player_coord.pos.x]) {

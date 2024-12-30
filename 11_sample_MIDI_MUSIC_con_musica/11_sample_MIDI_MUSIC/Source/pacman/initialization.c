@@ -78,6 +78,7 @@ void init_Player(player *p){
 	p->nlives = INITLIVES;
 	p->score = INITSCORE;
 	p->game_state = CONTINUE;
+	p->last_direction = 0;
 	
 }
 
