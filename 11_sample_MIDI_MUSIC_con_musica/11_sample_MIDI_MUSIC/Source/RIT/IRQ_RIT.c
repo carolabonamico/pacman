@@ -72,8 +72,8 @@ void RIT_IRQHandler (void)
 	
     if (begin == 1) {
         // Initialize timers after song playback
-        init_timer(2, 0, 0, 3, 0x7F2815);  				// Timer for random power pills
-        init_timer(3, 0, 0, 3, TimerInterval3);  	// Movement timer
+        init_timer(2, 0, 0, 3, 0x7735940);  							// Timer for random power pills 5s
+        init_timer(3, 0, 0, 3, TimerInterval3);  					// Movement timer
 //				init_timer(3, 0, 1, 5, TimerInterval3_1);					// Sound effects implementation
 
         enable_timer(2);  // Enable Timer 2

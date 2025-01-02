@@ -16,6 +16,7 @@ volatile int life_increment_threshold = NEWLIFE;
 extern int seed;
 extern int boardMatrix[ROWS][COLS];
 extern int ghostMatrix[BOXSIZE][BOXSIZE];
+volatile int rand_time = 5*25000000;
 
 /* REMINDER
 #define  MAX_X  240
@@ -283,9 +284,10 @@ void rand_PowerPill(grid *gr, player *p){
 					boardMatrix[y_rand][x_rand] == NOSPAWN ||
 					boardMatrix[y_rand][x_rand] == LEFTTUNNEL ||
 					boardMatrix[y_rand][x_rand] == RIGHTTUNNEL ||
+					boardMatrix[y_rand][x_rand] == POWERSCORE ||
 					(x_rand == p->player_coord.pos.x &&
 					y_rand == p->player_coord.pos.y)
-			);
+		);
 		
 		if(boardMatrix[y_rand][x_rand] == STDSCORE){
 			gr->n_stdpills--;
@@ -297,9 +299,9 @@ void rand_PowerPill(grid *gr, player *p){
 		// Implementing random spawn in time
 		seed += p->score;
 		srand(seed);
-		int rand_time = rand_Range(1,5) * 25000000;
+		rand_time += rand_Range(10,15)*25000000;
 
-		init_timer(2,0,0,7,rand_time);
+		init_timer(2,0,0,3,rand_time);
 
 }
 

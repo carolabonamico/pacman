@@ -126,8 +126,6 @@ void TIMER0_IRQHandler (void)
   return;
 }
 
-
-
 /******************************************************************************
 ** Function name:		Timer1_IRQHandler
 **
