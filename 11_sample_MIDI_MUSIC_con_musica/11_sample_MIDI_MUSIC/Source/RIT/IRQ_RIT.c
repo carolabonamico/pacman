@@ -17,6 +17,7 @@
 volatile int down_0 = 0;
 volatile int down_1 = 0;
 volatile int down_2 = 0;
+volatile int begin = 0;
 
 extern player p;
 extern int direction;
@@ -30,43 +31,6 @@ extern int TimerInterval3;
 #define RIT_SEMIMINIMA 8
 #define RIT_MINIMA 16
 #define RIT_INTERA 32
-
-#define UPTICKS 1
-
-NOTE song[] = 
-{
- {Si, time_semicroma}, 
- {Si_alto, time_semicroma}, 
- {Fa_diesis, time_semicroma}, 
- {Mi_bemolle, time_semicroma}, 
- {Si_alto, time_biscroma}, 
- {Fa, time_semicroma + time_biscroma}, 
- {Mi, time_croma}, 
- {Do, time_semicroma}, 
- {Do_alto, time_semicroma}, 
- {Sol, time_semicroma}, 
- {Mi, time_semicroma}, 
- {Do_alto, time_biscroma}, 
- {Sol, time_semicroma + time_biscroma}, 
- {Mi, time_croma}, 
- {Si, time_semicroma}, 
- {Si_alto, time_semicroma}, 
- {Fa_diesis, time_semicroma}, 
- {Mi_bemolle, time_semicroma}, 
- {Si_alto, time_biscroma}, 
- {Fa, time_semicroma + time_biscroma}, 
- {Mi, time_croma}, 
- {Mi, time_biscroma}, 
- {Mi, time_semicroma},
- {Fa, time_semicroma},
- {Fa, time_biscroma}, 
- {Fa_diesis, time_semicroma}, 
- {Sol, time_semicroma},
- {Sol, time_biscroma}, 
- {La_bemolle, time_semicroma}, 
- {La, time_semicroma},
- {Si_alto, time_croma}, 
-};
 
 /******************************************************************************
 ** Function name:		RIT_IRQHandler
@@ -86,24 +50,8 @@ void RIT_IRQHandler (void)
 	static int jleft=0;
 	static int jright=0;
 	
-	static int currentNote = 0;
-	static int ticks = 0;
-	static int begin = 0;
-	
 	if(begin == 0){
-		if(!isNotePlaying()){
-			++ticks;
-			if(ticks == UPTICKS)
-			{
-				ticks = 0;
-				playNote(song[currentNote++]);
-			}
-		}
-		
-		if(currentNote == (sizeof(song) / sizeof(song[0]))){
-			disable_RIT();
-			begin ++;
-		}
+		playSound();
 	}
 	
     if (begin == 1) {
