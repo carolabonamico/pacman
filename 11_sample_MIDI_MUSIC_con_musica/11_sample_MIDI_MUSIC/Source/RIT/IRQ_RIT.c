@@ -72,8 +72,9 @@ void RIT_IRQHandler (void)
 	
     if (begin == 1) {
         // Initialize timers after song playback
-        init_timer(2, 0, 0, 3, 0x7735940);  							// Timer for random power pills 5s
-        init_timer(3, 0, 0, 3, TimerInterval3);  					// Movement timer
+//        init_timer(2, 0, 0, 3, 0x7735940);  							// Timer for random power pills 5s
+        init_timer(2, 0, 0, 3, TimerInterval3);  							// Timer for random power pills 1s
+        init_timer(3, 0, 0, 3, TimerInterval3/2);  					// Movement timer
 //				init_timer(3, 0, 1, 5, TimerInterval3_1);					// Sound effects implementation
 
         enable_timer(2);  // Enable Timer 2
@@ -91,7 +92,7 @@ void RIT_IRQHandler (void)
 			if(g.play_vulnerable) playSound(ghost_vulnerable,ghostvulnerablelength);
 			if(p.nlives == 0) playSound(pacman_death,deathlength);
 			if(gr.n_powerpills == 0 && gr.n_stdpills == 0) playSound(victory,victorylength);
-			if(countdown == 0) playSound(game_over,gameoverlength);
+			if(countdown < 0) playSound(game_over,gameoverlength);
 			if(p.life_incremented) playSound(power_up,poweruplength);
 			
 			/*************************JOYSTICK SELECTION***************************/

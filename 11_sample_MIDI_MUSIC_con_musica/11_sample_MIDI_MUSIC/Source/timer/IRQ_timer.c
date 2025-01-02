@@ -62,13 +62,18 @@ volatile int elapsed_time_blue = 0;
 int current_interval_blue = 0x2DC6C0;
 node blue_dest;
 
-// 3s respawn
+// 3s ghost respawn
 volatile int elapsed_time_respawn = 0; 						
 int current_interval_respawn = 0x2DC6C0;
 
 // 1s countdown
 volatile int elapsed_time_countdown = 0;  						
 volatile int current_interval_countdown = 0x2DC6C0;
+
+// 1s powerpill spawn
+volatile int elapsed_time_powerpill = 0;  						
+volatile int current_interval_powerpill = 25000000;
+extern int rand_time;
 
 extern NOTE waka_waka[];
 extern int wakalength;
@@ -175,11 +180,29 @@ void TIMER2_IRQHandler (void)
 {
 	if(LPC_TIM2->IR & 1) // MR0
 	{ 
-
-		// Generating the seed for the random spawn of power pills in space
-		seed = LPC_TIM1->TC;
-		if(gr.n_powerpills<NMAXPOWERPILLS){
-			rand_PowerPill(&gr,&p);
+		
+		static int sub_second_count_powerpill = 0;
+		
+		if(p.game_state == CONTINUE){
+			
+			if(gr.n_powerpills == 0 && gr.n_stdpills == 0){
+						display_Win();
+				} else {
+						controller_Player(direction,&p.player_coord);
+						move_Player(&p,&gr,direction,&g);
+			}
+				
+			elapsed_time_powerpill = sub_Counter(elapsed_time_powerpill,&sub_second_count_powerpill,current_interval_powerpill,rand_time);
+			if(elapsed_time_powerpill >= 1){
+				elapsed_time_powerpill = 0;
+				
+				// Generating the seed for the random spawn of power pills in space
+				seed = LPC_TIM1->TC;
+				if(gr.n_powerpills<NMAXPOWERPILLS){
+					rand_PowerPill(&gr,&p);
+				}		
+			}
+			
 		}
 		
 		LPC_TIM2->IR = 1;			//clear interrupt flag
@@ -222,19 +245,12 @@ void TIMER3_IRQHandler (void)
 		static int sub_second_count_ghost = 0;
 		
 		if(p.game_state == CONTINUE){
-			
-				if(gr.n_powerpills == 0 && gr.n_stdpills == 0){
-						display_Win();
-				} else {
-						controller_Player(direction,&p.player_coord);
-						move_Player(&p,&gr,direction,&g);
-				}
 				
 			if(gr.n_powerpills != 0 || gr.n_stdpills != 0){
 
 				// Every 15 seconds, reduce the timer interval
 				elapsed_time_speed = sub_Counter(elapsed_time_speed,&sub_second_count_speed,current_interval_speed,ticks_per_second);
-        if(elapsed_time_speed >= 15 && countdown >= 0){
+        if(elapsed_time_speed >= 15 && countdown > 0){
            elapsed_time_speed = 0;
 					
            // Decrease the interval to make Blinky faster

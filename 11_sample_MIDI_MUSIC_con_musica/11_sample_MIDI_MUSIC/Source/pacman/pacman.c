@@ -301,8 +301,6 @@ void rand_PowerPill(grid *gr, player *p){
 		srand(seed);
 		rand_time += rand_Range(10,15)*25000000;
 
-		init_timer(2,0,0,3,rand_time);
-
 }
 
 void draw_Pacman_new(uint16_t x, uint16_t y, int color){

@@ -145,7 +145,6 @@ void playSound(NOTE *sound, int soundlength){
 				disable_timer(0);
 				disable_timer(1);
 				disable_RIT();
-				p.game_state = END;
 			} else if(sound == power_up){
 				p.life_incremented = false;
 			}
