@@ -37,6 +37,7 @@
 #define CONTINUE 0							// Continue flag
 #define PAUSE 1									// Pause flag
 #define GAMETIME 60							// Match duration
+#define END 2;									// End match flag
 
 // DEFINE FOR THE PRINTING FUNCTIONS
 #define OFFSET 4
@@ -79,6 +80,8 @@ typedef struct{
 	int score;										// Current score
 	int game_state;								// If game is in pause or not
 	int last_direction; 					// Last coded direction taken before a wall
+	bool waka_trigger;						// When pacman eats a standard pill, the waka sound plays
+	bool life_incremented;				// Set to true as the life is incremented
 } player;
 
 typedef struct{
@@ -89,6 +92,7 @@ typedef struct{
 	bool vulnerable;
 	bool eaten;
 	bool reset_counter;
+	bool play_vulnerable;
 } ghost;
 
 typedef struct{

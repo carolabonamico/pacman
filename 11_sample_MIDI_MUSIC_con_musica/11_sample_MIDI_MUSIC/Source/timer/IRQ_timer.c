@@ -70,6 +70,10 @@ int current_interval_respawn = 0x2DC6C0;
 volatile int elapsed_time_countdown = 0;  						
 volatile int current_interval_countdown = 0x2DC6C0;
 
+extern NOTE waka_waka[];
+extern int wakalength;
+extern int TimerInterval3_1;
+
 uint16_t SinTable[45] =                                      
 {
     410, 467, 523, 576, 627, 673, 714, 749, 778,
@@ -307,10 +311,27 @@ void TIMER3_IRQHandler (void)
 			
 		}
 		
+		TimerInterval3_1 = 0x186A0;
 		LPC_TIM3->IR = 1;			//clear interrupt flag
 	}
 	else if(LPC_TIM3->IR & 2){ // MR1
+		
+		if(p.game_state == CONTINUE){
+			
+			if(gr.n_powerpills != 0 || gr.n_stdpills != 0){
+					
+				if(p.waka_trigger){
+					playSound(waka_waka,wakalength);
+				}
+				
+				TimerInterval3_1 += 0x186A0;
+//				TimerInterval3_1 += 0x2DC6C0/2;
+				init_timer(3, 0, 1, 5, TimerInterval3_1);
+				enable_timer(3);
 
+			}
+		}
+		
 		LPC_TIM3->IR = 2;			// clear interrupt flag 
 	}
 	else if(LPC_TIM3->IR & 4){ // MR2

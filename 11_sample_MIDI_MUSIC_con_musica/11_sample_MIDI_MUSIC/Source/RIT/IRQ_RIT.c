@@ -18,12 +18,28 @@ volatile int down_0 = 0;
 volatile int down_1 = 0;
 volatile int down_2 = 0;
 volatile int begin = 0;
+volatile int TimerInterval3_1 = 0x186A0;				// 4ms
+//volatile int TimerInterval3_1 = 0x2DC6C0/2;				// 10ms
 
 extern player p;
+extern ghost g;
 extern int direction;
 extern grid gr;
 extern int pause_flag;
 extern int TimerInterval3;
+extern NOTE song[];
+extern int songlength;
+extern NOTE ghost_vulnerable[];
+extern int ghostvulnerablelength;
+extern NOTE pacman_death[];
+extern int deathlength;
+extern NOTE victory[];
+extern int victorylength;
+extern NOTE game_over[];
+extern int gameoverlength;
+extern int countdown;
+extern NOTE power_up[];
+extern int poweruplength;
 
 // MUSIC SECTION
 
@@ -51,13 +67,14 @@ void RIT_IRQHandler (void)
 	static int jright=0;
 	
 	if(begin == 0){
-		playSound();
+    playSound(song,songlength);
 	}
 	
     if (begin == 1) {
         // Initialize timers after song playback
-        init_timer(2, 0, 0, 3, 0x7F2815);  // Timer for random power pills
-        init_timer(3, 0, 0, 3, TimerInterval3);  // Ghost movement timer
+        init_timer(2, 0, 0, 3, 0x7F2815);  				// Timer for random power pills
+        init_timer(3, 0, 0, 3, TimerInterval3);  	// Movement timer
+//				init_timer(3, 0, 1, 5, TimerInterval3_1);					// Sound effects implementation
 
         enable_timer(2);  // Enable Timer 2
         enable_timer(3);  // Enable Timer 3
@@ -69,6 +86,13 @@ void RIT_IRQHandler (void)
 	
 	if(begin > 1){
 		if(p.game_state == 0){
+			
+			// SOUND EFFECTS
+			if(g.play_vulnerable) playSound(ghost_vulnerable,ghostvulnerablelength);
+			if(p.nlives == 0) playSound(pacman_death,deathlength);
+			if(gr.n_powerpills == 0 && gr.n_stdpills == 0) playSound(victory,victorylength);
+			if(countdown == 0) playSound(game_over,gameoverlength);
+			if(p.life_incremented) playSound(power_up,poweruplength);
 			
 			/*************************JOYSTICK SELECTION***************************/
 			if((LPC_GPIO1->FIOPIN & (1<<25)) == 0){	

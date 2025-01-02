@@ -74,7 +74,7 @@ int main (void) {
 	joystick_init();
 
 //	init_RIT(0x004C4B40);									/* RIT Initialization 50 msec       	*/
-//	init_RIT(0x0016E360);										/* RIT Initialization 60 msec       	*/
+//	init_RIT(0x0016E360);									/* RIT Initialization 60 msec       	*/
 	init_RIT(0x006ACFC0);										/* RIT Initialization 70 msec       	*/
 	enable_RIT();														/* RIT enabled												*/
 	ADC_init();

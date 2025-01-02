@@ -159,6 +159,7 @@ void update_NewLife(player *p){
 
 	if(p->score >= life_increment_threshold){
 		p->nlives++;
+		p->life_incremented = true;
 		life_increment_threshold += NEWLIFE;
 		draw_Character(p->nlives,LIFEPOS,pacmanMatrix_RIGHT,Yellow);
 		
@@ -239,6 +240,7 @@ void move_Player(player *p, grid *gr, int direction, ghost *g) {
                 boardMatrix[p->player_coord.next_pos.y][p->player_coord.pos.x] = EMPTY;
                 gr->n_stdpills--;
                 update_NewLife(p);
+								p->waka_trigger = true;
                 break;
             case POWERSCORE:
                 p->score += POWERSCORE;
@@ -247,6 +249,7 @@ void move_Player(player *p, grid *gr, int direction, ghost *g) {
                 gr->n_powerpills--;
                 update_NewLife(p);
                 g->vulnerable = true; // Make ghost vulnerable
+								g->play_vulnerable = true;
 								g->reset_counter = true;
                 break;
         }

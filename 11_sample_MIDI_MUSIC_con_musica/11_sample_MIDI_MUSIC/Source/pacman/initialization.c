@@ -79,6 +79,8 @@ void init_Player(player *p){
 	p->score = INITSCORE;
 	p->game_state = CONTINUE;
 	p->last_direction = 0;
+	p->waka_trigger = false;
+	p->life_incremented = false;
 	
 }
 
@@ -89,6 +91,7 @@ void init_Ghost(ghost *g){
 	g->vulnerable = false;
 	g->eaten = false;
 	g->reset_counter = false;
+	g->play_vulnerable = false;
 }
 
 // GRID

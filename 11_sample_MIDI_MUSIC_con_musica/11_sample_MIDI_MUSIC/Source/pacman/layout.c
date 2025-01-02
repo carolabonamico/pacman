@@ -12,6 +12,8 @@ extern int ghostMatrix[BOXSIZE][BOXSIZE];
 extern int direction;		
 extern int ticks_per_second;
 extern ghost g;
+extern player p;
+extern int countdown;
 
 // Board matrix
 volatile int boardMatrix[ROWS][COLS] = {
@@ -65,8 +67,8 @@ void menu_Pause(player *p, int direction){
 		p->game_state = PAUSE;
 	} else {
 		clear_Section(9,9,direction,p,&g);
-//		enable_timer(0);
-//		enable_timer(1);
+		enable_timer(0);
+		enable_timer(1);
 		enable_timer(2);
 		enable_timer(3);
 		p->game_state = CONTINUE;
@@ -74,22 +76,16 @@ void menu_Pause(player *p, int direction){
 }
 
 void display_GameOver(){
-	disable_timer(0);
-	disable_timer(1);
 	disable_timer(2);
 	disable_timer(3);
-	disable_RIT();
-	GUI_Text(78, 160,(uint8_t*) " GAME OVER ", Red, White);
-
+	if(p.nlives <= 0) GUI_Text(68, 160,(uint8_t*) " YOU ARE DEAD ", Red, White);
+	if(countdown < 0) GUI_Text(78, 160,(uint8_t*) " GAME OVER ", Red, White);
 }
 
 void display_Win(){
-	GUI_Text(83,160,(uint8_t*) " VICTORY ", Red, White);
-	disable_timer(0);
-	disable_timer(1);
 	disable_timer(2);
 	disable_timer(3);
-	disable_RIT();
+	GUI_Text(83,160,(uint8_t*) " VICTORY ", Red, White);
 }
 
 void clear_Section(int i, int j, int direction, player *p, ghost *g){

@@ -55,7 +55,7 @@ void move_Ghost(ghost *ghost, route *r, player *p) {
             // Handle game over
             if (p->nlives <= 0) {
                 draw_WallFull(p->player_coord.pos.x, p->player_coord.pos.y, Black, BOXSIZE);
-                display_GameOver();
+								display_GameOver();
                 return;
             }
 

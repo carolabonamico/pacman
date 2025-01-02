@@ -56,7 +56,7 @@ typedef struct
 
 void playNote(NOTE note);
 BOOL isNotePlaying(void);
-void playSound(void);
+void playSound(NOTE *sound, int soundlength);
 
 #endif
 /* EOF */
