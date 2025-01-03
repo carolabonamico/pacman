@@ -9,8 +9,7 @@ extern int begin;
 extern player p;
 extern ghost g;
 
-volatile note song[] = 
-{
+volatile note song[] = {
  {Si, time_semicroma}, 
  {Si_alto, time_semicroma}, 
  {Fa_diesis, time_semicroma}, 
@@ -41,13 +40,13 @@ volatile note song[] =
  {Sol, time_biscroma}, 
  {La_bemolle, time_semicroma}, 
  {La, time_semicroma},
- {Si_alto, time_croma}, 
+ {Si_alto, time_croma}
 };
 
 volatile note waka_waka[] = {
     {Wa, 5*time_biscroma},  
     {Ka, 5*time_biscroma},   
-    {silence, 5*time_biscroma},
+    {silence, 5*time_biscroma}
 };
 
 volatile note ghost_vulnerable[] = {
@@ -55,19 +54,19 @@ volatile note ghost_vulnerable[] = {
     {Mi, time_biscroma}, 
     {Do, time_biscroma}, 
     {Sol, time_biscroma},
-    {silence, time_biscroma},
+    {silence, time_biscroma}
 };
 
-note pacman_death[] = {
+volatile note pacman_death[] = {
     {Si, time_croma}, 
     {La, time_croma},
     {La_bemolle, time_semiminima}, 
     {Sol, time_semiminima}, 
     {Fa, time_minima},
-    {silence, time_minima},
+    {silence, time_minima}
 };
 
-note victory[] = {
+volatile note victory[] = {
     {Do_alto, time_semicroma}, 
     {Mi, time_croma}, 
     {Sol, time_croma}, 
@@ -75,35 +74,32 @@ note victory[] = {
     {Mi, time_semiminima}, 
     {Re, time_semiminima}, 
     {Do, time_minima}, 
-    {silence, time_minima},
+    {silence, time_minima}
 };
 
-note game_over[] = {
+volatile note game_over[] = {
     {Fa_diesis, time_croma}, 
     {Mi_bemolle, time_croma}, 
     {Do, time_minima},
     {La_bemolle, time_minima}, 
-    {silence, time_semibreve},
+    {silence, time_semibreve}
 };
 
-note power_up[] = {
-    {Do, time_semicroma}, 
-    {Re, time_semicroma}, 
-    {Mi, time_croma},
-    {Fa, time_croma},
-    {Sol, time_minima},
-    {silence, time_biscroma},
+volatile note power_up[] = {
+		{Do, time_semicroma},      
+    {Mi, time_semicroma},
+    {Sol, time_semicroma},
+    {Do_alto, time_croma},  
+    {Re, time_croma},       
+    {Mi, time_minima}
 };
 
-note eating_sound[] = {
-    {Do, time_semicroma},       
+volatile note eating_sound[] = {
+		{Do, time_semicroma},       
     {Re, time_semicroma},       
     {Mi, time_semicroma},       
     {Fa, time_semicroma},       
-    {Sol, time_semicroma},     
-    {La, time_biscroma},       
-    {Si, time_biscroma},     
-    {Do_alto, time_semiminima}, 
+    {Sol, time_semicroma}
 };
 
 volatile int songlength = sizeof(song) / sizeof(song[0]);

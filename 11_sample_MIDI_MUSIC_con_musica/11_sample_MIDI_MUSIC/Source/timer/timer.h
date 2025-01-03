@@ -13,6 +13,16 @@
 #include "../music/music.h"
 #include "LPC17xx.h"
 
+// K VALUES
+// k = 25MHz * time desired
+
+#define ONESEC 0x17D7840
+#define SEVENTYMS	0x6ACFC0
+#define FIFTYMS 0x4C4B40
+#define TWENTYMS 0x2DC6C0
+#define TENMS 0x16E360
+#define SYSFREQ 25000000
+
 /* init_timer.c */
 //extern unsigned int init_timer( char timer_num, unsigned int timerInterval );
 extern uint32_t init_timer( uint8_t timer_num, uint32_t Prescaler, uint8_t MatchReg, uint8_t SRImatchReg, uint32_t TimerInterval );

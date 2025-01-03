@@ -50,9 +50,6 @@ extern int pacmanMatrix_UP[BOXSIZE][BOXSIZE];
 extern int pacmanMatrix_DOWN[BOXSIZE][BOXSIZE];
 extern int boardMatrix[ROWS][COLS];
 
-volatile int TimerInterval3 = 0x2DC6C0;
-volatile int freq = 0x17D7840;
-
 /*----------------------------------------------------------------------------
   Main Program
  *----------------------------------------------------------------------------*/
@@ -73,9 +70,7 @@ int main (void) {
 		
 	joystick_init();
 
-//	init_RIT(0x004C4B40);									/* RIT Initialization 50 msec       	*/
-//	init_RIT(0x0016E360);									/* RIT Initialization 60 msec       	*/
-	init_RIT(0x006ACFC0);										/* RIT Initialization 70 msec       	*/
+	init_RIT(SEVENTYMS);										/* RIT Initialization 70 msec       	*/
 	enable_RIT();														/* RIT enabled												*/
 	ADC_init();
 	

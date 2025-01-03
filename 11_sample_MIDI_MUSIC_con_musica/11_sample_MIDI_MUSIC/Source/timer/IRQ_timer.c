@@ -14,16 +14,6 @@
 #include "../RIT/RIT.h"
 #include "../GLCD/GLCD.h"
 
-/******************************************************************************
-** Function name:		Timer0_IRQHandler
-**
-** Descriptions:		Timer/Counter 0 interrupt handler
-**
-** parameters:			None
-** Returned value:		None
-**
-******************************************************************************/
-
 extern unsigned char led_value;							/* defined in funct_led */
 unsigned char ledval = 0xA5;
 
@@ -32,52 +22,44 @@ extern grid gr;
 extern ghost g;
 
 extern route r;
-volatile float astar_interval = 10;					// Starting interval after which the a* is computed
+volatile float astar_interval = 10;						// Starting interval after which the a* is computed
 volatile float aggressive_threshold = 10;
 volatile float factor = 2.0/3;
+node blue_dest;
 
 extern int direction;
 volatile int countdown = GAMETIME;
-volatile double spawn_prob;
 volatile int seed;
 extern int boardMatrix[ROWS][COLS];
 extern int ghostMatrix[BOXSIZE][BOXSIZE];
 
+extern int TimerInterval2;
 extern int TimerInterval3;
-extern int freq;
-
-// Increment of speed variables
-volatile int elapsed_time_speed = 0;  				// Tracks elapsed time in real seconds
-int ticks_per_second = 25000000;   						// Initial timer interval (1 second for 25 MHz frequency)
-int current_interval_speed = 0x2DC6C0;  			// Current timer interval
-volatile int ghost_movement_increase;
-
-// Ghost movement interval
-volatile int elapsed_time_ghost = 0;					
-int current_interval_ghost = 0x2DC6C0;
-int ticks_per_second_ghost = 25000000;
-
-// Blue ghost interval
-volatile int elapsed_time_blue = 0;					
-int current_interval_blue = 0x2DC6C0;
-node blue_dest;
-
-// 3s ghost respawn
-volatile int elapsed_time_respawn = 0; 						
-int current_interval_respawn = 0x2DC6C0;
-
-// 1s countdown
-volatile int elapsed_time_countdown = 0;  						
-volatile int current_interval_countdown = 0x2DC6C0;
-
-// 1s powerpill spawn
-volatile int elapsed_time_powerpill = 0;  						
-volatile int current_interval_powerpill = 25000000;
-extern int rand_time;
+extern int TimerInterval3_1;
 
 extern note waka_waka[];
 extern int wakalength;
-extern int TimerInterval3_1;
+
+// Tracks elapsed time in real seconds
+volatile int elapsed_time_speed = 0;  					
+volatile int elapsed_time_ghost = 0;
+volatile int elapsed_time_blue = 0;		
+volatile int elapsed_time_respawn = 0; 
+volatile int elapsed_time_countdown = 0;
+volatile int elapsed_time_powerpill = 0; 
+
+// Current timer interval
+/* NOTE: these values have to match with the related value in the match registers! */
+volatile int current_interval_powerpill = TWENTYMS;
+volatile int current_interval_speed = TENMS;
+volatile int current_interval_ghost = TENMS;
+volatile int current_interval_blue = TENMS;
+volatile int current_interval_respawn = TENMS;
+volatile int current_interval_countdown = TENMS;
+
+volatile int ghost_movement_increase;
+volatile int ticks_per_second_ghost = SYSFREQ - TWENTYMS;
+extern int rand_time;
 
 uint16_t SinTable[45] =                                      
 {
@@ -249,12 +231,12 @@ void TIMER3_IRQHandler (void)
 			if(gr.n_powerpills != 0 || gr.n_stdpills != 0){
 
 				// Every 15 seconds, reduce the timer interval
-				elapsed_time_speed = sub_Counter(elapsed_time_speed,&sub_second_count_speed,current_interval_speed,ticks_per_second);
-        if(elapsed_time_speed >= 15 && countdown > 0){
+				elapsed_time_speed = sub_Counter(elapsed_time_speed,&sub_second_count_speed,current_interval_speed,SYSFREQ);
+        if(elapsed_time_speed >= 10 && countdown > 0 && ticks_per_second_ghost >TWENTYMS){
            elapsed_time_speed = 0;
 					
            // Decrease the interval to make Blinky faster
-					ticks_per_second_ghost -= 0x2DC6C0;
+					ticks_per_second_ghost -= TWENTYMS;
         }
 				
 				elapsed_time_ghost = sub_Counter(elapsed_time_ghost,&sub_second_count_ghost,current_interval_ghost,ticks_per_second_ghost);
@@ -289,7 +271,7 @@ void TIMER3_IRQHandler (void)
 								g.reset_counter = false;
 							}
 							if(g.vulnerable == true && g.reset_counter == false){
-								elapsed_time_blue = sub_Counter(elapsed_time_blue,&sub_second_count_blue,ticks_per_second_ghost,ticks_per_second);
+								elapsed_time_blue = sub_Counter(elapsed_time_blue,&sub_second_count_blue,ticks_per_second_ghost,SYSFREQ);
 								if(elapsed_time_blue >= 10){
 									elapsed_time_blue = 0;
 									g.vulnerable = false;
@@ -298,7 +280,7 @@ void TIMER3_IRQHandler (void)
 						} else {
 							
 							// Section for blinky to respawn after 3 s after being eaten
-							elapsed_time_respawn = sub_Counter(elapsed_time_respawn,&sub_second_count_respawn,ticks_per_second_ghost,ticks_per_second);
+							elapsed_time_respawn = sub_Counter(elapsed_time_respawn,&sub_second_count_respawn,ticks_per_second_ghost,SYSFREQ);
 							if(elapsed_time_respawn >= 3){
 								elapsed_time_respawn = 0;
 								init_Ghost(&g);
@@ -310,7 +292,7 @@ void TIMER3_IRQHandler (void)
         }	
 				
 				// Countdown section
-				elapsed_time_countdown = sub_Counter(elapsed_time_countdown,&sub_second_count,current_interval_countdown,ticks_per_second);
+				elapsed_time_countdown = sub_Counter(elapsed_time_countdown,&sub_second_count,current_interval_countdown,SYSFREQ);
 				if(elapsed_time_countdown >= 1){
 					elapsed_time_countdown = 0;
 					countdown --;
@@ -339,7 +321,7 @@ void TIMER3_IRQHandler (void)
 				}
 				
 				TimerInterval3_1 += 0x186A0;
-//				TimerInterval3_1 += 0x2DC6C0/2;
+//				TimerInterval3_1 += TENMS;
 				init_timer(3, 0, 1, 5, TimerInterval3_1);
 				enable_timer(3);
 

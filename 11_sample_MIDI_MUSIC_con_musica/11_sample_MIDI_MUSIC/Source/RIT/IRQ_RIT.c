@@ -7,6 +7,7 @@
 ** Correlated files:    RIT.h
 **--------------------------------------------------------------------------------------------------------
 *********************************************************************************************************/
+
 #include "LPC17xx.h"
 #include "RIT.h"
 #include "../led/led.h"
@@ -14,19 +15,20 @@
 #include "../pacman/pacman.h"
 
 // DECLARATION OF VARIABLES
+
 volatile int down_0 = 0;
 volatile int down_1 = 0;
 volatile int down_2 = 0;
 volatile int begin = 0;
+volatile int TimerInterval2 = TWENTYMS;
+volatile int TimerInterval3 = TENMS;
 volatile int TimerInterval3_1 = 0x186A0;				// 4ms
-//volatile int TimerInterval3_1 = 0x2DC6C0/2;				// 10ms
 
 extern player p;
 extern ghost g;
 extern int direction;
 extern grid gr;
 extern int pause_flag;
-extern int TimerInterval3;
 extern note song[];
 extern int songlength;
 extern note ghost_vulnerable[];
@@ -42,8 +44,6 @@ extern note power_up[];
 extern int poweruplength;
 extern note eating_sound[];
 extern int eatlength;
-
-// MUSIC SECTION
 
 // beat 1/4 = 1.65/4 seconds
 #define RIT_SEMIMINIMA 8
@@ -68,16 +68,17 @@ void RIT_IRQHandler (void)
 	static int jleft=0;
 	static int jright=0;
 	
+	// Initial soundtrack
 	if(begin == 0){
     playSound(song,songlength);
 	}
 	
     if (begin == 1) {
-        // Initialize timers after song playback
-//        init_timer(2, 0, 0, 3, 0x7735940);  							// Timer for random power pills 5s
-        init_timer(2, 0, 0, 3, TimerInterval3);  							// Timer for random power pills 1s
-        init_timer(3, 0, 0, 3, TimerInterval3/2);  					// Movement timer
-//				init_timer(3, 0, 1, 5, TimerInterval3_1);					// Sound effects implementation
+			
+        // Initialize timers after soundtrack playback
+        init_timer(2, 0, 0, 3, TimerInterval2);  						// Timer for random power pills + pacman movement
+        init_timer(3, 0, 0, 3, TimerInterval3);  					// Timer for ghost movement + ghost speedup + countdown implementation
+//				init_timer(3, 0, 1, 5, TimerInterval3_1);						// Waka sound implementation
 
         enable_timer(2);  // Enable Timer 2
         enable_timer(3);  // Enable Timer 3
@@ -88,9 +89,10 @@ void RIT_IRQHandler (void)
     }
 	
 	if(begin > 1){
-		if(p.game_state == 0){
+		if(p.game_state == CONTINUE){
 			
-			// SOUND EFFECTS
+			/*************************SOUND EFFECTS***************************/
+			
 			if(g.play_vulnerable) playSound(ghost_vulnerable,ghostvulnerablelength);
 			if(p.nlives == 0) playSound(pacman_death,deathlength);
 			if(gr.n_powerpills == 0 && gr.n_stdpills == 0) playSound(victory,victorylength);
