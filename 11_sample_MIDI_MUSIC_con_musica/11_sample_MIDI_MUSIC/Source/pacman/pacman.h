@@ -93,6 +93,7 @@ typedef struct{
 	bool eaten;
 	bool reset_counter;
 	bool play_vulnerable;
+	bool play_eaten;
 } ghost;
 
 typedef struct{

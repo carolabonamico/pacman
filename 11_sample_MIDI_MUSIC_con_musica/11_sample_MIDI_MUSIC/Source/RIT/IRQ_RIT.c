@@ -27,19 +27,21 @@ extern int direction;
 extern grid gr;
 extern int pause_flag;
 extern int TimerInterval3;
-extern NOTE song[];
+extern note song[];
 extern int songlength;
-extern NOTE ghost_vulnerable[];
+extern note ghost_vulnerable[];
 extern int ghostvulnerablelength;
-extern NOTE pacman_death[];
+extern note pacman_death[];
 extern int deathlength;
-extern NOTE victory[];
+extern note victory[];
 extern int victorylength;
-extern NOTE game_over[];
+extern note game_over[];
 extern int gameoverlength;
 extern int countdown;
-extern NOTE power_up[];
+extern note power_up[];
 extern int poweruplength;
+extern note eating_sound[];
+extern int eatlength;
 
 // MUSIC SECTION
 
@@ -94,6 +96,7 @@ void RIT_IRQHandler (void)
 			if(gr.n_powerpills == 0 && gr.n_stdpills == 0) playSound(victory,victorylength);
 			if(countdown < 0) playSound(game_over,gameoverlength);
 			if(p.life_incremented) playSound(power_up,poweruplength);
+			if(g.play_eaten) playSound(eating_sound,eatlength);
 			
 			/*************************JOYSTICK SELECTION***************************/
 			if((LPC_GPIO1->FIOPIN & (1<<25)) == 0){	

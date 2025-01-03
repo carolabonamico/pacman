@@ -92,6 +92,7 @@ void init_Ghost(ghost *g){
 	g->eaten = false;
 	g->reset_counter = false;
 	g->play_vulnerable = false;
+	g->play_eaten = false;
 }
 
 // GRID

@@ -75,7 +75,7 @@ volatile int elapsed_time_powerpill = 0;
 volatile int current_interval_powerpill = 25000000;
 extern int rand_time;
 
-extern NOTE waka_waka[];
+extern note waka_waka[];
 extern int wakalength;
 extern int TimerInterval3_1;
 

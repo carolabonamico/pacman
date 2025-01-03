@@ -1,6 +1,8 @@
 #ifndef MUSIC_H
 #define MUSIC_H
 
+#include <stdbool.h>
+
 #define TIMERSCALER 1
 #define SECOND 0x17D7840 * TIMERSCALER
 #define SPEEDUP 2
@@ -11,10 +13,6 @@
 
 // k = 25Mhz / (note_frequency * num_bit_per_note)
 
-typedef char BOOL;
-#define TRUE 1
-#define FALSE 0
-
 typedef enum note_durations
 {
 	time_semibiscroma = (unsigned int)(SECOND * SPEEDUP / 64.0f + 0.5), // 1/128
@@ -24,7 +22,7 @@ typedef enum note_durations
 	time_semiminima = (unsigned int)(SECOND * SPEEDUP / 4.0f + 0.5), // 1/4
 	time_minima = (unsigned int)(SECOND * SPEEDUP / 2.0f + 0.5), // 1/2
 	time_semibreve = (unsigned int)(SECOND * SPEEDUP + 0.5), // 1
-} NOTE_DURATION;
+} note_duration;
 
 typedef enum frequencies
 {
@@ -44,19 +42,19 @@ typedef enum frequencies
   Wa = (unsigned int) (per_freq / (200 * 45)),
   Ka = (unsigned int) (per_freq / (600 * 45)),
   silence = 0,
-} FREQUENCY;
+} frequency;
 
 
 typedef struct 
 {
-	FREQUENCY freq;
-	NOTE_DURATION duration;
+	frequency freq;
+	note_duration duration;
 	unsigned int intensity;
-} NOTE;
+} note;
 
-void playNote(NOTE note);
-BOOL isNotePlaying(void);
-void playSound(NOTE *sound, int soundlength);
+void playNote(note note);
+bool isNotePlaying(void);
+void playSound(note *sound, int soundlength);
 
 #endif
 /* EOF */

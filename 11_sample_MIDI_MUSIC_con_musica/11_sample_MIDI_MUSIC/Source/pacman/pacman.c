@@ -211,6 +211,7 @@ void move_Player(player *p, grid *gr, int direction, ghost *g) {
                 p->score += BLINKYSCORE;
                 update_ScoreHeader(p->score);
                 g->eaten = true;
+								g->play_eaten = true;
                 g->vulnerable = false;
 
                 // Remove ghost from the maze
@@ -299,7 +300,8 @@ void rand_PowerPill(grid *gr, player *p){
 		// Implementing random spawn in time
 		seed += p->score;
 		srand(seed);
-		rand_time += rand_Range(10,15)*25000000;
+		if(rand_time < 0xFFFFFFFF) rand_time += rand_Range(10,15)*25000000;
+		if(rand_time >= 0xFFFFFFFF) rand_time = 0xFFFFFFFF;
 
 }
 

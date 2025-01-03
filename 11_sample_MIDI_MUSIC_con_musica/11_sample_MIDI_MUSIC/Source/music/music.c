@@ -9,7 +9,7 @@ extern int begin;
 extern player p;
 extern ghost g;
 
-volatile NOTE song[] = 
+volatile note song[] = 
 {
  {Si, time_semicroma}, 
  {Si_alto, time_semicroma}, 
@@ -44,13 +44,13 @@ volatile NOTE song[] =
  {Si_alto, time_croma}, 
 };
 
-volatile NOTE waka_waka[] = {
+volatile note waka_waka[] = {
     {Wa, 5*time_biscroma},  
     {Ka, 5*time_biscroma},   
     {silence, 5*time_biscroma},
 };
 
-volatile NOTE ghost_vulnerable[] = {
+volatile note ghost_vulnerable[] = {
     {Sol, time_biscroma}, 
     {Mi, time_biscroma}, 
     {Do, time_biscroma}, 
@@ -58,7 +58,7 @@ volatile NOTE ghost_vulnerable[] = {
     {silence, time_biscroma},
 };
 
-NOTE pacman_death[] = {
+note pacman_death[] = {
     {Si, time_croma}, 
     {La, time_croma},
     {La_bemolle, time_semiminima}, 
@@ -67,7 +67,7 @@ NOTE pacman_death[] = {
     {silence, time_minima},
 };
 
-NOTE victory[] = {
+note victory[] = {
     {Do_alto, time_semicroma}, 
     {Mi, time_croma}, 
     {Sol, time_croma}, 
@@ -78,7 +78,7 @@ NOTE victory[] = {
     {silence, time_minima},
 };
 
-NOTE game_over[] = {
+note game_over[] = {
     {Fa_diesis, time_croma}, 
     {Mi_bemolle, time_croma}, 
     {Do, time_minima},
@@ -86,13 +86,24 @@ NOTE game_over[] = {
     {silence, time_semibreve},
 };
 
-NOTE power_up[] = {
+note power_up[] = {
     {Do, time_semicroma}, 
     {Re, time_semicroma}, 
     {Mi, time_croma},
     {Fa, time_croma},
     {Sol, time_minima},
     {silence, time_biscroma},
+};
+
+note eating_sound[] = {
+    {Do, time_semicroma},       
+    {Re, time_semicroma},       
+    {Mi, time_semicroma},       
+    {Fa, time_semicroma},       
+    {Sol, time_semicroma},     
+    {La, time_biscroma},       
+    {Si, time_biscroma},     
+    {Do_alto, time_semiminima}, 
 };
 
 volatile int songlength = sizeof(song) / sizeof(song[0]);
@@ -102,26 +113,27 @@ volatile int deathlength = sizeof(pacman_death) / sizeof(pacman_death[0]);
 volatile int victorylength = sizeof(victory) / sizeof(victory[0]);
 volatile int gameoverlength = sizeof(game_over) / sizeof(game_over[0]);
 volatile int poweruplength = sizeof(power_up) / sizeof(power_up[0]);
+volatile int eatlength = sizeof(eating_sound) / sizeof(eating_sound[0]);
 
-void playNote(NOTE note)
+void playNote(note musical_note)
 {
-    if (note.freq != silence)
+    if (musical_note.freq != silence)
     {
         reset_timer(0);
-        init_timer(0, 0, 0, 3, note.freq);
+        init_timer(0, 0, 0, 3, musical_note.freq);
         enable_timer(0);
     }
     reset_timer(1);
-    init_timer(1, 0, 0, 7, note.duration);
+    init_timer(1, 0, 0, 7, musical_note.duration);
     enable_timer(1);
 }
 
-BOOL isNotePlaying(void)
+bool isNotePlaying(void)
 {
     return ((LPC_TIM0->TCR != 0) || (LPC_TIM1->TCR != 0));
 }
 
-void playSound(NOTE *sound, int soundlength){
+void playSound(note *sound, int soundlength){
     static int currentNote = 0;
     static int ticks = 0;
 
@@ -147,6 +159,8 @@ void playSound(NOTE *sound, int soundlength){
 				disable_RIT();
 			} else if(sound == power_up){
 				p.life_incremented = false;
+			} else if(sound == eating_sound){
+				g.play_eaten = false;
 			}
 			
     }
