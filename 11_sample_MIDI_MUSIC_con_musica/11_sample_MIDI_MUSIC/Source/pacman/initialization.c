@@ -97,8 +97,9 @@ void init_Ghost(ghost *g){
 
 // GRID
 void init_Grid(grid *gr){
-	gr->n_powerpills=0;
-	gr->n_stdpills=0;
+	gr->n_powerpills = 0;
+	gr->n_stdpills = 0;
+	gr->sound_effect_triggered = false;
 }
 
 // ROUTE

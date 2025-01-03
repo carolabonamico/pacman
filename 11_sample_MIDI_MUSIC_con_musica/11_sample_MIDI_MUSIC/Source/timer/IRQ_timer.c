@@ -35,7 +35,7 @@ extern int ghostMatrix[BOXSIZE][BOXSIZE];
 
 extern int TimerInterval2;
 extern int TimerInterval3;
-extern int TimerInterval3_1;
+extern int TimerInterval2_1;
 
 extern note waka_waka[];
 extern int wakalength;
@@ -187,10 +187,26 @@ void TIMER2_IRQHandler (void)
 			
 		}
 		
+		TimerInterval2_1 = 0x186A0;
 		LPC_TIM2->IR = 1;			//clear interrupt flag
 	}
 	else if(LPC_TIM2->IR & 2){ // MR1
+		
+		if(p.game_state == CONTINUE){
+			
+			if(gr.n_powerpills != 0 || gr.n_stdpills != 0){
+					
+				if(p.waka_trigger && (!gr.sound_effect_triggered)){
+					playSound(waka_waka,wakalength);
+				}
+				
+				TimerInterval2_1 += 0x186A0;
+				init_timer(2, 0, 1, 5, TimerInterval2_1);
+				enable_timer(2);
 
+			}
+		}
+		
 		LPC_TIM2->IR = 2;			// clear interrupt flag 
 	}
 	else if(LPC_TIM2->IR & 4){ // MR2
@@ -307,26 +323,9 @@ void TIMER3_IRQHandler (void)
 			
 		}
 		
-		TimerInterval3_1 = 0x186A0;
 		LPC_TIM3->IR = 1;			//clear interrupt flag
 	}
 	else if(LPC_TIM3->IR & 2){ // MR1
-		
-		if(p.game_state == CONTINUE){
-			
-			if(gr.n_powerpills != 0 || gr.n_stdpills != 0){
-					
-				if(p.waka_trigger){
-					playSound(waka_waka,wakalength);
-				}
-				
-				TimerInterval3_1 += 0x186A0;
-//				TimerInterval3_1 += TENMS;
-				init_timer(3, 0, 1, 5, TimerInterval3_1);
-				enable_timer(3);
-
-			}
-		}
 		
 		LPC_TIM3->IR = 2;			// clear interrupt flag 
 	}

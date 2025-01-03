@@ -22,7 +22,7 @@ volatile int down_2 = 0;
 volatile int begin = 0;
 volatile int TimerInterval2 = TWENTYMS;
 volatile int TimerInterval3 = TENMS;
-volatile int TimerInterval3_1 = 0x186A0;				// 4ms
+volatile int TimerInterval2_1 = 0x186A0;				// 4ms
 
 extern player p;
 extern ghost g;
@@ -78,7 +78,7 @@ void RIT_IRQHandler (void)
         // Initialize timers after soundtrack playback
         init_timer(2, 0, 0, 3, TimerInterval2);  						// Timer for random power pills + pacman movement
         init_timer(3, 0, 0, 3, TimerInterval3);  					// Timer for ghost movement + ghost speedup + countdown implementation
-//				init_timer(3, 0, 1, 5, TimerInterval3_1);						// Waka sound implementation
+				init_timer(2, 0, 1, 5, TimerInterval2_1);						// Waka sound implementation
 
         enable_timer(2);  // Enable Timer 2
         enable_timer(3);  // Enable Timer 3
@@ -93,14 +93,27 @@ void RIT_IRQHandler (void)
 			
 			/*************************SOUND EFFECTS***************************/
 			
-			if(g.play_vulnerable) playSound(ghost_vulnerable,ghostvulnerablelength);
-			if(p.nlives == 0) playSound(pacman_death,deathlength);
-			if(gr.n_powerpills == 0 && gr.n_stdpills == 0) playSound(victory,victorylength);
-			if(countdown < 0) playSound(game_over,gameoverlength);
-			if(p.life_incremented) playSound(power_up,poweruplength);
-			if(g.play_eaten) playSound(eating_sound,eatlength);
-			
+			if(g.play_vulnerable){
+				gr.sound_effect_triggered = true;
+				playSound(ghost_vulnerable,ghostvulnerablelength);
+			} else if(p.nlives == 0){
+				playSound(pacman_death,deathlength);
+				gr.sound_effect_triggered = true;
+			} else if(gr.n_powerpills == 0 && gr.n_stdpills == 0){
+				gr.sound_effect_triggered = true;
+				playSound(victory,victorylength);
+			} else if(countdown < 0){
+				gr.sound_effect_triggered = true;
+				playSound(game_over,gameoverlength);
+			} else if(p.life_incremented){
+				gr.sound_effect_triggered = true;
+				playSound(power_up,poweruplength);
+			} else if(g.play_eaten){ 
+				gr.sound_effect_triggered = true;
+				playSound(eating_sound,eatlength);
+			}
 			/*************************JOYSTICK SELECTION***************************/
+			
 			if((LPC_GPIO1->FIOPIN & (1<<25)) == 0){	
 				/* Joytick SELECT pressed */
 				jselect++;
@@ -118,6 +131,7 @@ void RIT_IRQHandler (void)
 			}
 			
 			/*************************JOYSTICK UP***************************/
+			
 			if((LPC_GPIO1->FIOPIN & (1<<29)) == 0){	
 				/* Joytick UP pressed */
 				jup++;

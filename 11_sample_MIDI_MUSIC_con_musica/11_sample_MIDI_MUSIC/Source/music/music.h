@@ -5,7 +5,7 @@
 
 #define TIMERSCALER 1
 #define SECOND 0x17D7840 * TIMERSCALER
-#define SPEEDUP 2
+#define SPEEDUP 2.5
 #define Tone_Reductor 0.3
 #define SYSFREQ 25000000
 
@@ -36,8 +36,9 @@ typedef enum frequencies {
   Do_alto = (unsigned int) (SYSFREQ / (523 * Tone_Reductor * 45)),
   Re = (unsigned int) (SYSFREQ / (294 * Tone_Reductor * 45)), 
   
-  Wa = (unsigned int) (SYSFREQ / (200 * 45)),
-  Ka = (unsigned int) (SYSFREQ / (600 * 45)),
+//  Wa = (unsigned int) (SYSFREQ / (200 * 45)),
+//  Ka = (unsigned int) (SYSFREQ / (600 * 45)),
+	
   silence = 0,
 } frequency;
 

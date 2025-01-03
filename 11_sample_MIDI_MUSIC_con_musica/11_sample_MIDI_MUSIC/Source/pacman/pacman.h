@@ -99,6 +99,7 @@ typedef struct{
 typedef struct{
 	int n_stdpills;								// Number of standard pills on the grid
 	int n_powerpills;							// Number of power pills on the grid
+	bool sound_effect_triggered;	// Set to true is a sound effect is playing
 } grid;
 
 // ----- Structures for the A* algorithm -----

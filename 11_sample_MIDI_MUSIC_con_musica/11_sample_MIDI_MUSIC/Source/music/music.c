@@ -8,6 +8,7 @@
 extern int begin;
 extern player p;
 extern ghost g;
+extern grid gr;
 
 volatile note song[] = {
  {Si, time_semicroma}, 
@@ -44,62 +45,62 @@ volatile note song[] = {
 };
 
 volatile note waka_waka[] = {
-    {Wa, 5*time_biscroma},  
-    {Ka, 5*time_biscroma},   
-    {silence, 5*time_biscroma}
+	{Do, time_biscroma/4}, 				// First "waka"
+  {Re, time_biscroma/4}, 				// Second "waka"
+  {silence, time_biscroma / 2} 	// Short pause between eventual cycles
 };
 
 volatile note ghost_vulnerable[] = {
-    {Sol, time_biscroma}, 
-    {Mi, time_biscroma}, 
-    {Do, time_biscroma}, 
-    {Sol, time_biscroma},
-    {silence, time_biscroma}
+  {Sol, time_biscroma}, 
+  {Mi, time_biscroma}, 
+  {Do, time_biscroma}, 
+  {Sol, time_biscroma},
+  {silence, time_biscroma}
 };
 
 volatile note pacman_death[] = {
-    {Si, time_croma}, 
-    {La, time_croma},
-    {La_bemolle, time_semiminima}, 
-    {Sol, time_semiminima}, 
-    {Fa, time_minima},
-    {silence, time_minima}
+  {Si, time_croma}, 
+  {La, time_croma},
+  {La_bemolle, time_semiminima}, 
+  {Sol, time_semiminima}, 
+  {Fa, time_minima},
+  {silence, time_minima}
 };
 
 volatile note victory[] = {
-    {Do_alto, time_semicroma}, 
-    {Mi, time_croma}, 
-    {Sol, time_croma}, 
-    {Do_alto, time_minima},
-    {Mi, time_semiminima}, 
-    {Re, time_semiminima}, 
-    {Do, time_minima}, 
-    {silence, time_minima}
+  {Do_alto, time_semicroma}, 
+  {Mi, time_croma}, 
+  {Sol, time_croma}, 
+  {Do_alto, time_minima},
+  {Mi, time_semiminima}, 
+  {Re, time_semiminima}, 
+  {Do, time_minima}, 
+  {silence, time_minima}
 };
 
 volatile note game_over[] = {
-    {Fa_diesis, time_croma}, 
-    {Mi_bemolle, time_croma}, 
-    {Do, time_minima},
-    {La_bemolle, time_minima}, 
-    {silence, time_semibreve}
+  {Fa_diesis, time_croma}, 
+  {Mi_bemolle, time_croma}, 
+  {Do, time_minima},
+  {La_bemolle, time_minima}, 
+  {silence, time_semibreve}
 };
 
 volatile note power_up[] = {
-		{Do, time_semicroma},      
-    {Mi, time_semicroma},
-    {Sol, time_semicroma},
-    {Do_alto, time_croma},  
-    {Re, time_croma},       
-    {Mi, time_minima}
+	{Do, time_semicroma},      
+  {Mi, time_semicroma},
+  {Sol, time_semicroma},
+  {Do_alto, time_croma},  
+  {Re, time_croma},       
+  {Mi, time_minima}
 };
 
 volatile note eating_sound[] = {
-		{Do, time_semicroma},       
-    {Re, time_semicroma},       
-    {Mi, time_semicroma},       
-    {Fa, time_semicroma},       
-    {Sol, time_semicroma}
+	{Do, time_semicroma},       
+  {Re, time_semicroma},       
+  {Mi, time_semicroma},       
+  {Fa, time_semicroma},       
+  {Sol, time_semicroma}
 };
 
 volatile int songlength = sizeof(song) / sizeof(song[0]);
@@ -142,6 +143,7 @@ void playSound(note *sound, int soundlength){
     }
     if (currentNote == soundlength){
 			currentNote = 0;
+			gr.sound_effect_triggered = false;
 			if(sound == song){
         disable_RIT();
         begin++;
