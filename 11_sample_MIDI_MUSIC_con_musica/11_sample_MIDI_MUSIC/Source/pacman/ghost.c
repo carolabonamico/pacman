@@ -33,8 +33,13 @@ void move_Ghost(ghost *ghost, route *r, player *p) {
 			
         return; // Ghost remains out of play until respawn logic
     }
-
-    r->path_length--;
+		
+		if(r->path_length > 0){
+			r->path_length--;
+		} else {
+			return;
+		}
+		
     ghost->ghost_coord.next_pos.x = r->path[r->path_length].x;
     ghost->ghost_coord.next_pos.y = r->path[r->path_length].y;
 

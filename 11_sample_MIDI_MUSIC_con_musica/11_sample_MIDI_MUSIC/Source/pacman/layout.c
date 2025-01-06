@@ -76,12 +76,14 @@ void menu_Pause(player *p, int direction){
 }
 
 void display_GameOver(){
+	p.game_state = END;
 	disable_timer(2);
 	disable_timer(3);
 	GUI_Text(78, 160,(uint8_t*) " GAME OVER ", Red, White);
 }
 
 void display_Win(){
+	p.game_state = END;
 	disable_timer(2);
 	disable_timer(3);
 	GUI_Text(83,160,(uint8_t*) " VICTORY ", Red, White);

@@ -300,7 +300,7 @@ void rand_PowerPill(grid *gr, player *p){
 		// Implementing random spawn in time
 		seed += p->score;
 		srand(seed);
-		if(rand_time < 0xFFFFFFFF) rand_time += rand_Range(10,15)*SYSFREQ;
+		if(rand_time < 0xFFFFFFFF) rand_time += rand_Range(15,20)*SYSFREQ;
 		if(rand_time >= 0xFFFFFFFF) rand_time = 0xFFFFFFFF;
 
 }

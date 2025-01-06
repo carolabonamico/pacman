@@ -54,7 +54,7 @@ volatile int current_interval_tim2 = TWENTYMS;
 volatile int current_interval_tim3 = TENMS;
 
 volatile int ghost_movement_increase;
-volatile int ticks_per_second_ghost = SYSFREQ - TWENTYMS;
+volatile int ticks_per_second_ghost = SYSFREQ;
 extern int rand_time;
 
 uint16_t SinTable[45] =                                      
@@ -246,7 +246,7 @@ void TIMER3_IRQHandler (void)
 
 				// Every 15 seconds, reduce the timer interval
 				elapsed_time_speed = sub_Counter(elapsed_time_speed,&sub_second_count_speed,current_interval_tim3,SYSFREQ);
-        if(elapsed_time_speed >= 10 && countdown > 0 && ticks_per_second_ghost >TWENTYMS){
+        if(elapsed_time_speed >= 10 && countdown > 0 && ticks_per_second_ghost >= 2*TWENTYMS){
            elapsed_time_speed = 0;
 					
            // Decrease the interval to make Blinky faster
@@ -321,10 +321,9 @@ void TIMER3_IRQHandler (void)
 				if(elapsed_time_countdown >= 1){
 					elapsed_time_countdown = 0;
 					countdown --;
-					if (countdown<0){
-						display_GameOver();
-					}else{
 					update_TimerHeader(countdown);
+					if (countdown<=0){
+						display_GameOver();
 					}		
 				}
 				
