@@ -175,7 +175,7 @@ void TIMER2_IRQHandler (void)
 				elapsed_time_powerpill = 0;
 				
 				// Generating the seed for the random spawn of power pills in space
-				seed = LPC_TIM1->TC;
+				seed = LPC_TIM2->TC;
 				if(gr.n_powerpills<NMAXPOWERPILLS){
 					rand_PowerPill(&gr,&p);
 				}		
