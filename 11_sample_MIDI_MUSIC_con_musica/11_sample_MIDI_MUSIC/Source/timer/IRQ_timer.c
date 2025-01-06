@@ -22,7 +22,6 @@ extern grid gr;
 extern ghost g;
 
 extern route r;
-volatile float astar_interval = 10;						// Starting interval after which the a* is computed
 volatile float aggressive_threshold = 10;
 volatile float factor = 2.0/3;
 node blue_dest;
@@ -46,16 +45,13 @@ volatile int elapsed_time_ghost = 0;
 volatile int elapsed_time_blue = 0;		
 volatile int elapsed_time_respawn = 0; 
 volatile int elapsed_time_countdown = 0;
-volatile int elapsed_time_powerpill = 0; 
+volatile int elapsed_time_powerpill = 0;
+volatile int elapsed_time_life = 0; 
 
 // Current timer interval
 /* NOTE: these values have to match with the related value in the match registers! */
-volatile int current_interval_powerpill = TWENTYMS;
-volatile int current_interval_speed = TENMS;
-volatile int current_interval_ghost = TENMS;
-volatile int current_interval_blue = TENMS;
-volatile int current_interval_respawn = TENMS;
-volatile int current_interval_countdown = TENMS;
+volatile int current_interval_tim2 = TWENTYMS;
+volatile int current_interval_tim3 = TENMS;
 
 volatile int ghost_movement_increase;
 volatile int ticks_per_second_ghost = SYSFREQ - TWENTYMS;
@@ -174,7 +170,7 @@ void TIMER2_IRQHandler (void)
 						move_Player(&p,&gr,direction,&g);
 			}
 				
-			elapsed_time_powerpill = sub_Counter(elapsed_time_powerpill,&sub_second_count_powerpill,current_interval_powerpill,rand_time);
+			elapsed_time_powerpill = sub_Counter(elapsed_time_powerpill,&sub_second_count_powerpill,current_interval_tim2,rand_time);
 			if(elapsed_time_powerpill >= 1){
 				elapsed_time_powerpill = 0;
 				
@@ -241,13 +237,15 @@ void TIMER3_IRQHandler (void)
 		static int sub_second_count_blue = 0;
 		static int sub_second_count_respawn = 0;
 		static int sub_second_count_ghost = 0;
+		static int sub_second_count_life = 0;
+		static int ghost_moves = ASTARINTERVAL;
 		
 		if(p.game_state == CONTINUE){
 				
 			if(gr.n_powerpills != 0 || gr.n_stdpills != 0){
 
 				// Every 15 seconds, reduce the timer interval
-				elapsed_time_speed = sub_Counter(elapsed_time_speed,&sub_second_count_speed,current_interval_speed,SYSFREQ);
+				elapsed_time_speed = sub_Counter(elapsed_time_speed,&sub_second_count_speed,current_interval_tim3,SYSFREQ);
         if(elapsed_time_speed >= 10 && countdown > 0 && ticks_per_second_ghost >TWENTYMS){
            elapsed_time_speed = 0;
 					
@@ -255,7 +253,15 @@ void TIMER3_IRQHandler (void)
 					ticks_per_second_ghost -= TWENTYMS;
         }
 				
-				elapsed_time_ghost = sub_Counter(elapsed_time_ghost,&sub_second_count_ghost,current_interval_ghost,ticks_per_second_ghost);
+				if(p.life_decremented){
+					elapsed_time_life = sub_Counter(elapsed_time_life,&sub_second_count_life,current_interval_tim3,SYSFREQ);
+					if(elapsed_time_life >= ASTARINTERVAL){
+						elapsed_time_life = 0;
+						p.life_decremented = false;
+					}
+				}
+				
+				elapsed_time_ghost = sub_Counter(elapsed_time_ghost,&sub_second_count_ghost,current_interval_tim3,ticks_per_second_ghost);
         if(elapsed_time_ghost >= 1){
            elapsed_time_ghost = 0;
 					
@@ -263,17 +269,20 @@ void TIMER3_IRQHandler (void)
 							if(p.player_coord.pos.x != p.player_coord.next_pos.x ||
 								p.player_coord.pos.x != p.player_coord.next_pos.y ||
 								g.path_length == 0){
-									
-								// Performing a* algorithm
-								init_Route(&r);
-									
-								if(g.vulnerable != true){
-									a_Star(boardMatrix,g.ghost_coord.pos,p.player_coord.pos,&r);
-								}else{
-									find_NewDest(boardMatrix,p.player_coord.pos.x,p.player_coord.pos.y,&blue_dest);
-									a_Star(boardMatrix,g.ghost_coord.pos,blue_dest,&r);
+								
+
+								if(!p.life_decremented){
+									// Performing a* algorithm
+									init_Route(&r);
+										
+									if(g.vulnerable != true){
+										a_Star(boardMatrix,g.ghost_coord.pos,p.player_coord.pos,&r);
+									}else{
+										find_NewDest(boardMatrix,p.player_coord.pos.x,p.player_coord.pos.y,&blue_dest);
+										a_Star(boardMatrix,g.ghost_coord.pos,blue_dest,&r);
+									}
 								}
-									
+								
 							}
 								
 							// Section to move ghost
@@ -308,7 +317,7 @@ void TIMER3_IRQHandler (void)
         }	
 				
 				// Countdown section
-				elapsed_time_countdown = sub_Counter(elapsed_time_countdown,&sub_second_count,current_interval_countdown,SYSFREQ);
+				elapsed_time_countdown = sub_Counter(elapsed_time_countdown,&sub_second_count,current_interval_tim3,SYSFREQ);
 				if(elapsed_time_countdown >= 1){
 					elapsed_time_countdown = 0;
 					countdown --;

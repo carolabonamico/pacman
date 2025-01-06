@@ -81,7 +81,7 @@ void init_Player(player *p){
 	p->last_direction = 0;
 	p->waka_trigger = false;
 	p->life_incremented = false;
-	
+	p->life_decremented = false;
 }
 
 // GHOST

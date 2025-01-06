@@ -55,6 +55,9 @@
 #define DIRLEFT 4
 #define DIRRIGHT 5
 
+// DEFINE FOR A* ALGORITHM
+#define ASTARINTERVAL 3				// Ghost moves after which a* algorithm is performed
+
 //#define ROW 9
 //#define COL 10
 
@@ -82,6 +85,7 @@ typedef struct{
 	int last_direction; 					// Last coded direction taken before a wall
 	bool waka_trigger;						// When pacman eats a standard pill, the waka sound plays
 	bool life_incremented;				// Set to true as the life is incremented
+	bool life_decremented;
 } player;
 
 typedef struct{
@@ -147,6 +151,7 @@ void redraw_Pacman(int current_x, int current_y, int next_x, int next_y, int dir
 
 /* layout.c */
 void decrement_Life(player *p);
+void draw_LastDir(int x, int y);
 // Pop-up functions
 void clear_Section(int i, int j, int direction, player *p, ghost *g);
 void menu_Pause(player *p, int direction);

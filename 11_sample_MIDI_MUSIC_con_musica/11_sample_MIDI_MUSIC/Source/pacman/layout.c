@@ -78,8 +78,7 @@ void menu_Pause(player *p, int direction){
 void display_GameOver(){
 	disable_timer(2);
 	disable_timer(3);
-	if(p.nlives <= 0) GUI_Text(68, 160,(uint8_t*) " YOU ARE DEAD ", Red, White);
-	if(countdown < 0) GUI_Text(78, 160,(uint8_t*) " GAME OVER ", Red, White);
+	GUI_Text(78, 160,(uint8_t*) " GAME OVER ", Red, White);
 }
 
 void display_Win(){
@@ -111,15 +110,7 @@ void clear_Section(int i, int j, int direction, player *p, ghost *g){
 				
 				if(x == p->player_coord.pos.x && y == p->player_coord.pos.y){
 					draw_WallFull(x,y,Black,BOXSIZE);
-					if(p->last_direction == DIRUP){
-						draw_Character(x,y,pacmanMatrix_UP,Yellow);
-					} else if (p->last_direction == DIRDOWN){
-						draw_Character(x,y,pacmanMatrix_DOWN,Yellow); 
-					} else if (p->last_direction == DIRLEFT){
-						draw_Character(x,y,pacmanMatrix_LEFT,Yellow);
-					}	else if (p->last_direction == DIRRIGHT){
-						draw_Character(x,y,pacmanMatrix_RIGHT,Yellow); 
-					}
+					draw_LastDir(x,y);
 				} else if(x == g->ghost_coord.pos.x && y == g->ghost_coord.pos.y){
 					draw_WallFull(x,y,Black,BOXSIZE);
 					int color = (g->vulnerable) ? Cyan : Red;
@@ -128,6 +119,20 @@ void clear_Section(int i, int j, int direction, player *p, ghost *g){
 
 		}
   } 		
+}
+
+void draw_LastDir(int x, int y){
+	
+	if(p.last_direction == DIRUP){
+		draw_Character(x,y,pacmanMatrix_UP,Yellow);
+	} else if (p.last_direction == DIRDOWN){
+		draw_Character(x,y,pacmanMatrix_DOWN,Yellow); 
+	} else if (p.last_direction == DIRLEFT){
+		draw_Character(x,y,pacmanMatrix_LEFT,Yellow);
+	}	else if (p.last_direction == DIRRIGHT){
+		draw_Character(x,y,pacmanMatrix_RIGHT,Yellow); 
+	}
+
 }
 
 int sub_Counter(int elapsed_time,int *sub_second_count, int current_interval, int ticks_per_second){

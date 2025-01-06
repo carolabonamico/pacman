@@ -45,6 +45,7 @@ void move_Ghost(ghost *ghost, route *r, player *p) {
         if (!ghost->vulnerable) {
             // Ghost damages Pacman
             decrement_Life(p);
+						p->life_decremented = true;
 
             // Redraw Pacman twice for visual feedback
             redraw_Pacman(p->player_coord.pos.x, p->player_coord.pos.y,
@@ -57,7 +58,9 @@ void move_Ghost(ghost *ghost, route *r, player *p) {
                 draw_WallFull(p->player_coord.pos.x, p->player_coord.pos.y, Black, BOXSIZE);
 								display_GameOver();
                 return;
-            }
+            } else {
+							draw_LastDir(p->player_coord.pos.x, p->player_coord.pos.y);
+						}
 
             // Stop ghost's movement
             ghost->ghost_coord.next_pos.x = ghost->ghost_coord.pos.x;
