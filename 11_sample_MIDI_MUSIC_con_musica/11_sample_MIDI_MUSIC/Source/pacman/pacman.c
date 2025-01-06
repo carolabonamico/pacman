@@ -8,14 +8,12 @@
 /* -------------------- VARIABLES DECLARATION -------------------- */
 
 extern player p;
-extern ghost g;
 extern grid gr;
 extern int direction;
 extern int flag;
 volatile int life_increment_threshold = NEWLIFE;
 extern int seed;
 extern int boardMatrix[ROWS][COLS];
-extern int ghostMatrix[BOXSIZE][BOXSIZE];
 volatile int rand_time = 5*SYSFREQ;
 
 /* REMINDER
@@ -151,10 +149,6 @@ void update_ScoreHeader(int score){
 	GUI_Text((MAX_X/3)*2,MAX_Y/16,(unsigned char*) str_score ,White,Black);
 }
 
-void init_Perc(route *perc){
-	perc->path_length = 0;
-}
-
 // LIFE INCREMENT FUNCTION
 void update_NewLife(player *p){
 
@@ -194,38 +188,13 @@ void controller_Player(int direction, coord *c){
 }
 
 // FUNCTION TO PERFORM NEXT STEP OF THE PLAYER
-void move_Player(player *p, grid *gr, int direction, ghost *g) {
+void move_Player(player *p, grid *gr, int direction){
     int current_x = p->player_coord.pos.x;
     int current_y = p->player_coord.pos.y;
 
     if (boardMatrix[p->player_coord.next_pos.y][p->player_coord.next_pos.x] != WALL &&
         boardMatrix[p->player_coord.next_pos.y][p->player_coord.next_pos.x] != DOOR &&
         direction != 0) {
-
-        // Check for collision with ghost
-        if (p->player_coord.next_pos.x == g->ghost_coord.pos.x &&
-            p->player_coord.next_pos.y == g->ghost_coord.pos.y && !g->eaten) {
-            
-            if (g->vulnerable) {
-                // Pacman eats the ghost
-                p->score += BLINKYSCORE;
-                update_ScoreHeader(p->score);
-                g->eaten = true;
-								g->play_eaten = true;
-                g->vulnerable = false;
-
-                // Remove ghost from the maze
-                boardMatrix[g->ghost_coord.pos.y][g->ghost_coord.pos.x] = EMPTY;
-            } else {
-                // If the ghost is not vulnerable, Pacman cannot eat it
-                // Stop Pacman's movement
-                p->player_coord.next_pos.x = current_x;
-                p->player_coord.next_pos.y = current_y;
-                direction = 0;
-
-                return; // Exit as Pacman stays in place
-            }
-        }
 
         // Update Pacman's position
         p->player_coord.pos.x = p->player_coord.next_pos.x;
@@ -242,7 +211,6 @@ void move_Player(player *p, grid *gr, int direction, ghost *g) {
                 boardMatrix[p->player_coord.next_pos.y][p->player_coord.pos.x] = EMPTY;
                 gr->n_stdpills--;
                 update_NewLife(p);
-								p->waka_trigger = true;
                 break;
             case POWERSCORE:
                 p->score += POWERSCORE;
@@ -250,9 +218,6 @@ void move_Player(player *p, grid *gr, int direction, ghost *g) {
                 boardMatrix[p->player_coord.next_pos.y][p->player_coord.pos.x] = EMPTY;
                 gr->n_powerpills--;
                 update_NewLife(p);
-                g->vulnerable = true; // Make ghost vulnerable
-								g->play_vulnerable = true;
-								g->reset_counter = true;
                 break;
         }
     } else {
@@ -302,31 +267,6 @@ void rand_PowerPill(grid *gr, player *p){
 		srand(seed);
 		if(rand_time < 0xFFFFFFFF) rand_time += rand_Range(15,20)*SYSFREQ;
 		if(rand_time >= 0xFFFFFFFF) rand_time = 0xFFFFFFFF;
-
-}
-
-void draw_Pacman_new(uint16_t x, uint16_t y, int color){
-
-	int i, j;
-	uint32_t bgcolor;
-  uint16_t x_start = x * BOXSIZE;
-  uint16_t y_start = y * BOXSIZE + UPPERMENU;
-	
-	for(i=0;i<BOXSIZE;i++){
-		for(j=0;j<BOXSIZE;j++){
-			switch(pacmanMatrix_UP[j][i]){
-				case 0:
-					bgcolor = Black;
-				break;
-				case 2:
-					bgcolor = color;
-					break;
-				default:
-					break;
-			}
-			LCD_SetPoint(x_start+i,y_start+j,bgcolor);
-		}
-	}
 
 }
 

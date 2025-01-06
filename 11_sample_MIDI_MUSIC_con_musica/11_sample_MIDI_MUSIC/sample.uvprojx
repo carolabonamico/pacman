@@ -473,41 +473,6 @@
           </Files>
         </Group>
         <Group>
-          <GroupName>ADC</GroupName>
-          <Files>
-            <File>
-              <FileName>adc.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\Source\adc\adc.h</FilePath>
-            </File>
-            <File>
-              <FileName>IRQ_adc.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\Source\adc\IRQ_adc.c</FilePath>
-            </File>
-            <File>
-              <FileName>lib_adc.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\Source\adc\lib_adc.c</FilePath>
-            </File>
-          </Files>
-        </Group>
-        <Group>
-          <GroupName>music</GroupName>
-          <Files>
-            <File>
-              <FileName>music.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\Source\music\music.c</FilePath>
-            </File>
-            <File>
-              <FileName>music.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\Source\music\music.h</FilePath>
-            </File>
-          </Files>
-        </Group>
-        <Group>
           <GroupName>CMSIS_core</GroupName>
           <Files>
             <File>
@@ -615,16 +580,6 @@
         <Group>
           <GroupName>pacman</GroupName>
           <Files>
-            <File>
-              <FileName>astar.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\Source\pacman\astar.c</FilePath>
-            </File>
-            <File>
-              <FileName>ghost.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\Source\pacman\ghost.c</FilePath>
-            </File>
             <File>
               <FileName>initialization.c</FileName>
               <FileType>1</FileType>
@@ -1119,41 +1074,6 @@
           </Files>
         </Group>
         <Group>
-          <GroupName>ADC</GroupName>
-          <Files>
-            <File>
-              <FileName>adc.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\Source\adc\adc.h</FilePath>
-            </File>
-            <File>
-              <FileName>IRQ_adc.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\Source\adc\IRQ_adc.c</FilePath>
-            </File>
-            <File>
-              <FileName>lib_adc.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\Source\adc\lib_adc.c</FilePath>
-            </File>
-          </Files>
-        </Group>
-        <Group>
-          <GroupName>music</GroupName>
-          <Files>
-            <File>
-              <FileName>music.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\Source\music\music.c</FilePath>
-            </File>
-            <File>
-              <FileName>music.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\Source\music\music.h</FilePath>
-            </File>
-          </Files>
-        </Group>
-        <Group>
           <GroupName>CMSIS_core</GroupName>
           <Files>
             <File>
@@ -1261,16 +1181,6 @@
         <Group>
           <GroupName>pacman</GroupName>
           <Files>
-            <File>
-              <FileName>astar.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\Source\pacman\astar.c</FilePath>
-            </File>
-            <File>
-              <FileName>ghost.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\Source\pacman\ghost.c</FilePath>
-            </File>
             <File>
               <FileName>initialization.c</FileName>
               <FileType>1</FileType>

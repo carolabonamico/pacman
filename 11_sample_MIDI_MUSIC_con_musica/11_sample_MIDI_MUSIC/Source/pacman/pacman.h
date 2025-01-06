@@ -55,9 +55,6 @@
 #define DIRLEFT 4
 #define DIRRIGHT 5
 
-// DEFINE FOR A* ALGORITHM
-#define ASTARINTERVAL 3				// Ghost moves after which a* algorithm is performed
-
 //#define ROW 9
 //#define COL 10
 
@@ -83,43 +80,14 @@ typedef struct{
 	int score;										// Current score
 	int game_state;								// If game is in pause or not
 	int last_direction; 					// Last coded direction taken before a wall
-	bool waka_trigger;						// When pacman eats a standard pill, the waka sound plays
 	bool life_incremented;				// Set to true as the life is incremented
-	bool life_decremented;
 } player;
-
-typedef struct{
-	coord ghost_coord;
-	node dest;
-	node path[ROWS*COLS];
-	int path_length;
-	bool vulnerable;
-	bool eaten;
-	bool reset_counter;
-	bool play_vulnerable;
-	bool play_eaten;
-} ghost;
 
 typedef struct{
 	int n_stdpills;								// Number of standard pills on the grid
 	int n_powerpills;							// Number of power pills on the grid
-	bool sound_effect_triggered;	// Set to true is a sound effect is playing
 } grid;
 
-// ----- Structures for the A* algorithm -----
-
-typedef struct {
-    int f;
-		int g;
-		int h;
-    int parent_x;
-		int parent_y;
-} cell;
-
-typedef struct {
-    node path[ROWS * COLS];  		// Path array
-    int path_length;        		// Length of the path
-} route;
 
 /*
 ---------- FUNCTIONS DECLARATION ----------
@@ -140,7 +108,7 @@ void update_ScoreHeader(int score);
 void update_NewLife(player *p);
 // Move layer functions
 void controller_Player(int direction, coord *c);
-void move_Player(player *p, grid *gr, int direction, ghost *g);
+void move_Player(player *p, grid *gr, int direction);
 
 // Power pills spawn functions
 int rand_Range(int min, int max);
@@ -150,33 +118,18 @@ void draw_Character(uint16_t x, uint16_t y, int matrix[BOXSIZE][BOXSIZE], int co
 void redraw_Pacman(int current_x, int current_y, int next_x, int next_y, int direction);
 
 /* layout.c */
-void decrement_Life(player *p);
 void draw_LastDir(int x, int y);
 // Pop-up functions
-void clear_Section(int i, int j, int direction, player *p, ghost *g);
+void clear_Section(int i, int j, int direction, player *p);
 void menu_Pause(player *p, int direction);
 void display_GameOver(void);
 void display_Win(void);
-
-/* ghost.c */
-void move_Ghost(ghost *ghost, route *r, player *p);
 
 /* initialization.c */
 void init_Header(void);
 void init_GameSpace(grid *gr);
 void init_Player(player *p);
-void init_Ghost(ghost *g);
 void init_Grid(grid *gr);
-void init_Route(route *r);
-void init_ClosedList(int closedList[ROWS][COLS]);
 int sub_Counter(int elapsed_time,int *sub_second_count, int current_interval, int ticks_per_second);
-
-/* astar.c */
-int is_Valid(int row,int col);
-int is_Unblocked(int boardMatrix[ROWS][COLS],int row,int col);
-int is_Destination(int row, int col, node dest);
-void a_Star(int boardMatrix[ROWS][COLS], node start, node dest, route *r);
-int distance_Manhattan(int x1, int y1, int x2, int y2);
-void find_NewDest(int boardMatrix[ROWS][COLS], int pacman_x, int pacman_y, node *destination);
 
 #endif

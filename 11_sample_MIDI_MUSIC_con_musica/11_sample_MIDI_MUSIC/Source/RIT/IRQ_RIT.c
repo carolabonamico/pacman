@@ -25,30 +25,9 @@ volatile int TimerInterval3 = TENMS;
 volatile int TimerInterval2_1 = 0x186A0;				// 4ms
 
 extern player p;
-extern ghost g;
 extern int direction;
 extern grid gr;
 extern int pause_flag;
-extern note song[];
-extern int songlength;
-extern note ghost_vulnerable[];
-extern int ghostvulnerablelength;
-extern note pacman_death[];
-extern int deathlength;
-extern note victory[];
-extern int victorylength;
-extern note game_over[];
-extern int gameoverlength;
-extern int countdown;
-extern note power_up[];
-extern int poweruplength;
-extern note eating_sound[];
-extern int eatlength;
-
-// beat 1/4 = 1.65/4 seconds
-#define RIT_SEMIMINIMA 8
-#define RIT_MINIMA 16
-#define RIT_INTERA 32
 
 /******************************************************************************
 ** Function name:		RIT_IRQHandler
@@ -70,15 +49,14 @@ void RIT_IRQHandler (void)
 	
 	// Initial soundtrack
 	if(begin == 0){
-    playSound(song,songlength);
+    begin ++;
 	}
 	
-    if (begin == 1) {
+  if (begin == 1) {
 			
         // Initialize timers after soundtrack playback
-        init_timer(2, 0, 0, 3, TimerInterval2);  						// Timer for random power pills + pacman movement
+        init_timer(2, 0, 0, 3, TimerInterval2);  					// Timer for random power pills + pacman movement
         init_timer(3, 0, 0, 3, TimerInterval3);  					// Timer for ghost movement + ghost speedup + countdown implementation
-				init_timer(2, 0, 1, 5, TimerInterval2_1);						// Waka sound implementation
 
         enable_timer(2);  // Enable Timer 2
         enable_timer(3);  // Enable Timer 3
@@ -86,32 +64,11 @@ void RIT_IRQHandler (void)
         reset_RIT();      // Reset RIT for normal operation
         enable_RIT();     // Re-enable RIT
         begin++;          // Move to the next stage
-    }
+  }
 	
 	if(begin > 1){
 		if(p.game_state == CONTINUE){
 			
-			/*************************SOUND EFFECTS***************************/
-			
-			if(g.play_vulnerable){
-				gr.sound_effect_triggered = true;
-				playSound(ghost_vulnerable,ghostvulnerablelength);
-			} else if(p.nlives == 0){
-				playSound(pacman_death,deathlength);
-				gr.sound_effect_triggered = true;
-			} else if(gr.n_powerpills == 0 && gr.n_stdpills == 0){
-				gr.sound_effect_triggered = true;
-				playSound(victory,victorylength);
-			} else if(countdown < 0){
-				gr.sound_effect_triggered = true;
-				playSound(game_over,gameoverlength);
-			} else if(p.life_incremented){
-				gr.sound_effect_triggered = true;
-				playSound(power_up,poweruplength);
-			} else if(g.play_eaten){ 
-				gr.sound_effect_triggered = true;
-				playSound(eating_sound,eatlength);
-			}
 			/*************************JOYSTICK SELECTION***************************/
 			
 			if((LPC_GPIO1->FIOPIN & (1<<25)) == 0){	

@@ -56,9 +56,6 @@ void init_GameSpace(grid *gr){
 				case PACMANPOS:
 					draw_Character(COLS-2,ROWS-2,pacmanMatrix_LEFT,Yellow);
 					break;
-				case GHOSTPOS:
-					draw_Character(x,y,ghostMatrix,Red);
-					break;
 				default:
 					break;
 			}
@@ -79,49 +76,11 @@ void init_Player(player *p){
 	p->score = INITSCORE;
 	p->game_state = CONTINUE;
 	p->last_direction = 0;
-	p->waka_trigger = false;
 	p->life_incremented = false;
-	p->life_decremented = false;
-}
-
-// GHOST
-void init_Ghost(ghost *g){
-	g->ghost_coord.pos.x = 11;
-	g->ghost_coord.pos.y = 11;
-	g->vulnerable = false;
-	g->eaten = false;
-	g->reset_counter = false;
-	g->play_vulnerable = false;
-	g->play_eaten = false;
 }
 
 // GRID
 void init_Grid(grid *gr){
 	gr->n_powerpills = 0;
 	gr->n_stdpills = 0;
-	gr->sound_effect_triggered = false;
-}
-
-// ROUTE
-void init_Route(route *r){
-	
-	int i;
-  for(i = 0; i < ROWS * COLS; i++){
-		r->path[i].x = 0;
-    r->path[i].y = 0;
-  }
-  r->path_length = 0;
-		
-}
-
-// CLOSED LIST
-void init_ClosedList(int closedList[ROWS][COLS]){
-	
-	int i, j;
-	for(i=0;i<ROWS;i++){
-		for(j=0;j<COLS;j++){
-			closedList[i][j] = 0;	
-		}
-	}
-
 }

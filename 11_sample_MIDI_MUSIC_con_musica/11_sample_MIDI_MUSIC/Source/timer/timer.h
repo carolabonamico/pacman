@@ -10,7 +10,6 @@
 #ifndef __TIMER_H
 #define __TIMER_H
 
-#include "../music/music.h"
 #include "LPC17xx.h"
 
 // K VALUES

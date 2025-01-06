@@ -19,7 +19,6 @@
 #include "led/led.h"
 #include "timer/timer.h"
 #include "RIT/RIT.h"
-#include "adc/adc.h"
 
 #include "GLCD/GLCD.h" 
 #include "pacman/pacman.h"
@@ -34,16 +33,9 @@ extern uint8_t ScaleFlag; // <- ScaleFlag needs to visible in order for the emul
 
 // VARIABLE DECLARATION
 player p;
-ghost g;
 grid gr;
-route r;
-
-extern cell cellDetails[ROWS][COLS];
-extern node openList[ROWS * COLS];
-extern node current;
 
 volatile int direction = 0;
-extern int ghostMatrix[BOXSIZE][BOXSIZE];
 extern int pacmanMatrix_LEFT[BOXSIZE][BOXSIZE];
 extern int pacmanMatrix_RIGTH[BOXSIZE][BOXSIZE];
 extern int pacmanMatrix_UP[BOXSIZE][BOXSIZE];
@@ -66,13 +58,11 @@ int main (void) {
 	init_Grid(&gr);
 	init_GameSpace(&gr);
 	init_Player(&p);
-	init_Ghost(&g);
 		
 	joystick_init();
 
 	init_RIT(SEVENTYMS);										/* RIT Initialization 70 msec       	*/
 	enable_RIT();														/* RIT enabled												*/
-	ADC_init();
 	
 	LPC_SC->PCON |= 0x1;										/* power-down	mode										*/
 	LPC_SC->PCON &= ~(0x2);						
