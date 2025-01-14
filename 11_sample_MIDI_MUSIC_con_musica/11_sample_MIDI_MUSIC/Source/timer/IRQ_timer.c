@@ -13,6 +13,7 @@
 #include "../pacman/pacman.h"
 #include "../RIT/RIT.h"
 #include "../GLCD/GLCD.h"
+#include "../CAN/CAN.h"
 
 extern unsigned char led_value;							/* defined in funct_led */
 unsigned char ledval = 0xA5;
@@ -321,13 +322,14 @@ void TIMER3_IRQHandler (void)
 				if(elapsed_time_countdown >= 1){
 					elapsed_time_countdown = 0;
 					countdown --;
-					update_TimerHeader(countdown);
 					if (countdown<=0){
 						display_GameOver();
 					}		
 				}
 				
 			}
+			
+			handle_CANValues();
 			
 		}
 		

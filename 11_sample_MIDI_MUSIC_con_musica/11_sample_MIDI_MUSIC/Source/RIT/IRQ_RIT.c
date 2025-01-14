@@ -77,7 +77,7 @@ void RIT_IRQHandler (void)
 			
         // Initialize timers after soundtrack playback
         init_timer(2, 0, 0, 3, TimerInterval2);  						// Timer for random power pills + pacman movement
-        init_timer(3, 0, 0, 3, TimerInterval3);  					// Timer for ghost movement + ghost speedup + countdown implementation
+        init_timer(3, 0, 0, 3, TimerInterval3);  						// Timer for ghost movement + ghost speedup + countdown implementation
 				init_timer(2, 0, 1, 5, TimerInterval2_1);						// Waka sound implementation
 
         enable_timer(2);  // Enable Timer 2

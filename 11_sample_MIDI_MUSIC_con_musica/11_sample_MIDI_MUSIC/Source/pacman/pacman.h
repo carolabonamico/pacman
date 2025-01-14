@@ -138,6 +138,7 @@ void draw_Pacman_new(uint16_t x, uint16_t y, int color);
 void update_TimerHeader(int countdown);
 void update_ScoreHeader(int score);
 void update_NewLife(player *p);
+void print_Lives(int nlives);
 // Move layer functions
 void controller_Player(int direction, coord *c);
 void move_Player(player *p, grid *gr, int direction, ghost *g);

@@ -152,30 +152,3 @@ int sub_Counter(int elapsed_time,int *sub_second_count, int current_interval, in
 	
 	return elapsed_time;
 }
-
-void check_PreviousCell(player *p, grid *gr, ghost *g){
-
-		// Updating the scores and the matrix
-		switch(boardMatrix[p->player_coord.next_pos.y][p->player_coord.next_pos.x]){
-			case STDSCORE:
-				p->score += STDSCORE;
-				update_ScoreHeader(p->score);
-				boardMatrix[p->player_coord.next_pos.y][p->player_coord.next_pos.x] = EMPTY;
-				gr->n_stdpills--;
-				// Check for incrementing lives
-				update_NewLife(p);
-				break;
-			case POWERSCORE:
-				p->score += POWERSCORE;
-				update_ScoreHeader(p->score);
-				boardMatrix[p->player_coord.next_pos.y][p->player_coord.next_pos.x] = EMPTY;
-				gr->n_powerpills--;
-				// Check for incrementing lives
-				update_NewLife(p);
-				// Bool for vulnerable ghost
-				g->vulnerable = true;
-				break;
-		}
-
-
-}

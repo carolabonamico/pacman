@@ -25,6 +25,7 @@
 #include "pacman/pacman.h"
 #include "joystick/joystick.h"
 #include "button_EXINT/button.h"
+#include "CAN/CAN.h"
 
 #include <stdint.h>
 
@@ -57,6 +58,7 @@ extern int boardMatrix[ROWS][COLS];
 int main (void) {
   	
 	SystemInit();  												/* System Initialization (i.e., PLL)  */
+	CAN_Init();
   LED_init();                           /* LED Initialization                 */
 	BUTTON_init();
 	LCD_Initialization();	

@@ -648,6 +648,26 @@
           </Files>
         </Group>
         <Group>
+          <GroupName>CAN</GroupName>
+          <Files>
+            <File>
+              <FileName>CAN.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Source\CAN\CAN.h</FilePath>
+            </File>
+            <File>
+              <FileName>IRQ_CAN.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Source\CAN\IRQ_CAN.c</FilePath>
+            </File>
+            <File>
+              <FileName>lib_CAN.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Source\CAN\lib_CAN.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
           <GroupName>::CMSIS</GroupName>
         </Group>
       </Groups>
@@ -1290,6 +1310,26 @@
               <FileName>pacman.h</FileName>
               <FileType>5</FileType>
               <FilePath>.\Source\pacman\pacman.h</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>CAN</GroupName>
+          <Files>
+            <File>
+              <FileName>CAN.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Source\CAN\CAN.h</FilePath>
+            </File>
+            <File>
+              <FileName>IRQ_CAN.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Source\CAN\IRQ_CAN.c</FilePath>
+            </File>
+            <File>
+              <FileName>lib_CAN.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Source\CAN\lib_CAN.c</FilePath>
             </File>
           </Files>
         </Group>
