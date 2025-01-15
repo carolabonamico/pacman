@@ -7,12 +7,17 @@
 ** Correlated files:    timer.h
 **--------------------------------------------------------------------------------------------------------
 *********************************************************************************************************/
+
 #include "LPC17xx.h"
 #include "timer.h"
 #include "../led/led.h"
+#include "../GLCD/GLCD.h" 
+#include "../TouchPanel/TouchPanel.h"
 #include "../pacman/pacman.h"
 #include "../RIT/RIT.h"
-#include "../GLCD/GLCD.h"
+#include "../CAN/CAN.h"
+#include <stdio.h> /*for sprintf*/
+#include <string.h>
 
 extern unsigned char led_value;							/* defined in funct_led */
 unsigned char ledval = 0xA5;
@@ -321,13 +326,14 @@ void TIMER3_IRQHandler (void)
 				if(elapsed_time_countdown >= 1){
 					elapsed_time_countdown = 0;
 					countdown --;
-					update_TimerHeader(countdown);
 					if (countdown<=0){
 						display_GameOver();
 					}		
 				}
 				
 			}
+			
+			handle_CANValues();
 			
 		}
 		

@@ -139,15 +139,12 @@ void update_TimerHeader(int countdown){
 	} else {
 		sprintf(str_timer, "0%ds", countdown); 
 	}
-	
-	GUI_Text(0,0, (unsigned char*) "GAME OVER IN",White,Black);
 	GUI_Text(0,MAX_Y/16, (unsigned char*) str_timer ,White,Black);
 }
 
 void update_ScoreHeader(int score){
 	char str_score[10];
 	sprintf(str_score, "%d", score); 
-	GUI_Text((MAX_X/3)*2,0,(unsigned char*) "SCORE",White,Black);
 	GUI_Text((MAX_X/3)*2,MAX_Y/16,(unsigned char*) str_score ,White,Black);
 }
 
@@ -162,9 +159,15 @@ void update_NewLife(player *p){
 		p->nlives++;
 		p->life_incremented = true;
 		life_increment_threshold += NEWLIFE;
-		draw_Character(p->nlives,LIFEPOS,pacmanMatrix_RIGHT,Yellow);
-		
 	}
+}
+
+void print_Lives(int nlives){
+	
+	int i;
+	for(i=0;i<nlives;i++) {
+		draw_Character(i+1,LIFEPOS,pacmanMatrix_RIGHT,Yellow);
+  }
 }
 
 // FUNCTION TO COMPUTE NEXT POSITION OF PLAYER
@@ -209,7 +212,6 @@ void move_Player(player *p, grid *gr, int direction, ghost *g) {
             if (g->vulnerable) {
                 // Pacman eats the ghost
                 p->score += BLINKYSCORE;
-                update_ScoreHeader(p->score);
                 g->eaten = true;
 								g->play_eaten = true;
                 g->vulnerable = false;
@@ -238,7 +240,6 @@ void move_Player(player *p, grid *gr, int direction, ghost *g) {
         switch (boardMatrix[p->player_coord.next_pos.y][p->player_coord.pos.x]) {
             case STDSCORE:
                 p->score += STDSCORE;
-                update_ScoreHeader(p->score);
                 boardMatrix[p->player_coord.next_pos.y][p->player_coord.pos.x] = EMPTY;
                 gr->n_stdpills--;
                 update_NewLife(p);
@@ -246,11 +247,10 @@ void move_Player(player *p, grid *gr, int direction, ghost *g) {
                 break;
             case POWERSCORE:
                 p->score += POWERSCORE;
-                update_ScoreHeader(p->score);
                 boardMatrix[p->player_coord.next_pos.y][p->player_coord.pos.x] = EMPTY;
                 gr->n_powerpills--;
                 update_NewLife(p);
-                g->vulnerable = true; // Make ghost vulnerable
+								g->vulnerable = true; // Make ghost vulnerable
 								g->play_vulnerable = true;
 								g->reset_counter = true;
                 break;
